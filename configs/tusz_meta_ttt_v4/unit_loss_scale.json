@@ -1,0 +1,9 @@
+{
+  "loss_scale": {
+    "post": 1.0,
+    "gain": 1.0,
+    "paired_damage": 1.0,
+    "kl": 0.1
+  },
+  "status": "diagnostic_only_unscaled"
+}

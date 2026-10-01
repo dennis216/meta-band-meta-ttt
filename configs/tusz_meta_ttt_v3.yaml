@@ -1,0 +1,35 @@
+protocol:
+  id: tusz_meta_ttt_v3
+  seed: 3407
+  mode: future
+  development_patients: {fit: 463, validation: 116}
+  objectives: [band, mask]
+  conditions: [b0, b1, b2, b3]
+  condition_losses:
+    b0: [post_bce]
+    b1: [post_bce, alignment]
+    b2: [post_bce, damage]
+    b3: [post_bce, alignment, damage]
+  alignment_coefficient: 0.1
+  damage_coefficient: 1.0
+  high_background_quantile: 0.90
+  epochs: 2
+  confirmation_seeds: [3407]
+
+reuse:
+  source_namespace: outputs/reports/tusz_meta_ttt_v1
+  ssl_namespace: outputs/reports/tusz_meta_ttt_v2
+  adapted_blocks: [10, 11]
+  detector_freeze_fraction: 0.25
+  truncated_updates: 4
+
+promotion:
+  maximum_sensitivity_drop: 0.02
+  minimum_false_alarm_reduction: 0.10
+  false_alarm_time_may_increase: false
+  maximum_common_event_delay_increase_s: 2.0
+  current_mode_only_after_future_passes: true
+
+outputs:
+  namespace: outputs/reports/tusz_meta_ttt_v3
+

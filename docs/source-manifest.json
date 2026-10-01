@@ -1,0 +1,1526 @@
+{
+  "src/bfa/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ae4757c90c030bbc18155d838f8d89e68a7e0b7cb13957d4fe68f0633cff518e"
+  },
+  "src/bfa/provenance.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "234cb5db220d99f46720b0ff1e70844223e5d7ed9fda5f3100ffe0efbd7f812a"
+  },
+  "src/bfa/contracts.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b5a71822b6bd6b4bbec6543162dfd039dd09e0d4e9b451dcc0be647ff59bba0a"
+  },
+  "src/bfa/tusz_meta_ttt/preprocessing.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6cb86136566654ee7bd6609a0325993c78b0f116b061e96d74a3b70fbbb535d4"
+  },
+  "src/bfa/tusz_meta_ttt/scoring.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "bc1c85be824c62a86329457a4f842306dc5dba605a240b064db28a62cc833949"
+  },
+  "src/bfa/tusz_meta_ttt/data.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4a1b727532e804bda75471b03d3486272da165fc1d9a7c200880935eea1d31df"
+  },
+  "src/bfa/tusz_meta_ttt/labels.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4e936a760dd79f6058e988b4d55a6bf31922f8271a20f0e3b4329f39f14df761"
+  },
+  "src/bfa/tusz_meta_ttt/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7d115703335ef7db5c3ad544c9306131954e0a9646f4ba5e29ac851b4778bd40"
+  },
+  "src/bfa/tusz_meta_ttt/statistics.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7a83f9cea8359ed7db73bf3d8f0b8415bbe5f5cfe25deb94b858fc8707a90180"
+  },
+  "src/bfa/tusz_meta_ttt/adaptation.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "86c59293379fb34a6a11c9dcd0972359646681128de252072bc8fbcb3496aebd"
+  },
+  "src/bfa/tusz_meta_ttt/objectives.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a8bee97689049f61318f618510cb331bf3ecbfc493e80fb6fdf5ab7d276e2c28"
+  },
+  "src/bfa/tusz_meta_ttt/functional.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8e0571d3c74db8498d0110066a957a83689e36e98b9dbb0ffb9dbdd2f4b33af1"
+  },
+  "src/bfa/tusz_meta_ttt/alignment.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7681347f8826f9a607846e9c48473f6da1f8620d2e1d0bed36fde61682441173"
+  },
+  "src/bfa/tusz_meta_ttt/model.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c374ac037f3cbf0a579e535434430170104b9f98add3f27abadf6bb341aae6e4"
+  },
+  "src/bfa/tusz_meta_ttt/dataset.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "5d4f79dfc81967a1408c60fe99519b8172c98a7fdeb537519254efeb55d92082"
+  },
+  "src/bfa/preprocessing/signal.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f08e31e38e0943dc4dec222a0f27d2c4de0779f4d1ad6421addbdf4728615442"
+  },
+  "src/bfa/preprocessing/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "52e6ae7be2738c37c1539197394feb8a545792ba2b79f6c37db3675761a11dab"
+  },
+  "src/bfa/preprocessing/tuh.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "47920a7060f320ba04f1e5d061d6f88d6cf2894d52f7dde175368bbe43b03ef5"
+  },
+  "src/bfa/preprocessing/cache.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c76b41dc5ddce6395956669455b560be8ee768103c9d057deab36addd625fb95"
+  },
+  "src/bfa/preprocessing/channels.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a6ae2ae1a767f08c31d72c0e061d3a53c50c4c34cb6992f316acb3beb0892bdf"
+  },
+  "src/bfa/tusz_meta_ttt_v3/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7ac2a605e33ac7a03b4e50a269fa25cacefab084e339278a5a4c17aed184dc8b"
+  },
+  "src/bfa/tusz_meta_ttt_v3/losses.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "701707435f0439abc4fe8a5b73c96933bac3fbe04c31ad88e2a8ed0bc79d505c"
+  },
+  "src/bfa/tusz_meta_ttt_v3/joint_schedule.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b5ec989a62fc2f78875437bc563ffb45438352ba2fbaac844cdd0d1994e37124"
+  },
+  "src/bfa/data/split.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "53cb8cbcba42d8e8a1679d87d84577efb9da075cad45d673f3790b4501be6cb3"
+  },
+  "src/bfa/data/windows.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ba90f3cd922f92bd10638d200c1f8df29dc2e2945d2d04b69ea857ca7d58c3c3"
+  },
+  "src/bfa/data/scan.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3f1d17f7570273360443a394918f0b4f89b89375b1a6524e65384bfc1206a140"
+  },
+  "src/bfa/data/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a968a1e79723a4bf1a8b0d0a19a6c540f0d6676865026924954d7d43980ad2d6"
+  },
+  "src/bfa/data/download.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "121c46011f5094214266e5ca67247da618edd481a5157323f785d65cd9c3fb88"
+  },
+  "src/bfa/evaluation/eventize.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b57021ad419db02bbefd6745f07a32e1e35acd549d99011c1634c6ac8d478e30"
+  },
+  "src/bfa/evaluation/match.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f225820743a881882c94264b5cba9210a5e540e52a4e51e3089922e88267adf3"
+  },
+  "src/bfa/evaluation/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e22691aef58ab1001523395eba165507b64d44431225f5c1d5d59cb1991f7ee8"
+  },
+  "src/bfa/evaluation/metrics.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8ef081443a5dc6c69ce4cc3d0a77b10a823b4da0c1bceb3de50025f58f8ac65b"
+  },
+  "src/bfa/training/trainer.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "598edac11da7e0bab3be8a6f2e2f468a4853fcbb8abfb534ae5210cf7b3f9bfd"
+  },
+  "src/bfa/training/matrix.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a5228d440c88d393d16c30af76a86627e41ff5466d90f3c2d59a5d63991999ce"
+  },
+  "src/bfa/training/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a749bfdd87eba656e27d48e9ff8763dd3243db3c4025c153189ceacc2c914b86"
+  },
+  "src/bfa/training/sampler.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2538ff5bc793405e5ede34d9f5462570764349055faa517f86a9b33a03a08e5b"
+  },
+  "src/bfa/training/losses.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d3944f816e1743e7f11c7603a6032165d7a974c0abf2bf1bb1b24e4af05ef6e7"
+  },
+  "src/bfa/training/dataset.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a5a5b7a4b5b9d4197b2c6ec5da10310ccf581aaeeda5fdbbe41291cdf7a553ce"
+  },
+  "src/bfa/tusz_meta_ttt_v4/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "94bb59d8e8bbb4c81107b23c17b89305372484f497aeeac721538d797a245935"
+  },
+  "src/bfa/tusz_meta_ttt_v4/losses.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f513a74873e73d9115ea2ca3e635eda05f5c07f348a4636698ddf8ff778d8408"
+  },
+  "src/bfa/tusz_meta_ttt_v4/joint_schedule.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d0beaac6ca273547ed470cfab9b3549f0a658052f7a7953c3c17504e784e87a3"
+  },
+  "src/bfa/tusz_meta_ttt_v2/grouping.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d0d27509e639be7cdd0099cf49a2a7a1b382c2b3b9afa6f62091746607622067"
+  },
+  "src/bfa/tusz_meta_ttt_v2/launch.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e951b7a709ff5659d74191ba9ce9437bd28c55fc139eff500b9e92d95b49a4c2"
+  },
+  "src/bfa/tusz_meta_ttt_v2/protocol.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c27664dd2842e2c68a758c15699baadc95fb08f23f22a3d5dc06f93a5b4887a4"
+  },
+  "src/bfa/tusz_meta_ttt_v2/runtime.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a1a2a73e62a990e8c6b435ad1225a6313dfbd830f7d9eb51b56107e8c8891032"
+  },
+  "src/bfa/tusz_meta_ttt_v2/update.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "fd2876f23faa321f9a314aefda529f3f0bf0bc300b3d0e7d3f7975a313b88e11"
+  },
+  "src/bfa/tusz_meta_ttt_v2/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "1463b8dc93619c40352716b692e49728248a51dcc37853b40b60833a6bf178a8"
+  },
+  "src/bfa/tusz_meta_ttt_v2/objectives.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2a00f389ead18a3507b4b372baf20f01c4356fb6d622ae554b26cdb1503f7013"
+  },
+  "src/bfa/tusz_meta_ttt_v2/functional.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "16aadfcc94d0adef79f0072705ff02f1cc6dcc292acb56418c5de5aaaa4dc3d0"
+  },
+  "src/bfa/tusz_meta_ttt_v2/training_state.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "de4720238fe792555b955eaa4e9c07acb9316eeb22b97c1cfcc2904b2d12400d"
+  },
+  "src/bfa/tusz_meta_ttt_v2/batched.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "34e05e446fbffd7bd63cf7701865ba8c994cde89edbfd6affef34f66344bd0a9"
+  },
+  "src/bfa/tusz_meta_ttt_v2/joint_schedule.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2c28ff22734d913f56368a5d8976072186d8f1b4cca953f6fdadfcc6522ebfb7"
+  },
+  "src/bfa/models/base.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "271789e6bf340654efb4ed2c10933d04e7dadf7d03124b5f3f28a03bf74f0caa"
+  },
+  "src/bfa/models/shared_head.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "1a781727b1d938a06068a0195a588679f9e5b25f1d46581b0262788bede6c657"
+  },
+  "src/bfa/models/precomputed.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3d794013c056fc79c087520adaf0cd10426f399de04a37191846556e46892b6d"
+  },
+  "src/bfa/models/lora.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e4a301972edec19d21e1a9e88f683872010b00f99afce3ab8c3ddebdd5c1510f"
+  },
+  "src/bfa/models/__init__.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "bc4f85123f05a9d1e165ff971ad68f69daa7f0755aa2d8123256f2d1492c961e"
+  },
+  "src/bfa/models/tcn_gat.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "67383ba6d08bbcedea96ed87eb9ab6cebfda00103fd3070755e71a51bef2c9ae"
+  },
+  "src/bfa/models/cbramod_adapter.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "9b131438cd374d437067020ea9489f0166d4a5d7eef85222109f8811ffa12ad3"
+  },
+  "src/bfa/models/singlem_adapter.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "bf88197ec4d7119b31c911640ebf30815b145373644e385a5f6bb82c983df463"
+  },
+  "tests/test_contracts.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a4a203cee34a18e868dff158734e7ed5d3fb54807acf5ecbc8a8d74656003fc0"
+  },
+  "tests/tusz_meta_ttt/test_v4_losses.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "bc1f10dcb91f2c0049e9756a7cafd6f920e2c2d0bc2c003921cbab5cd87604ee"
+  },
+  "tests/tusz_meta_ttt/test_dataset.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c0e09281097488d8945278431a1e42ed6c1b0f1febaddd0fef241e374cade77b"
+  },
+  "tests/tusz_meta_ttt/test_v2_grouping.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "467e7e6682a6226a09302710a638f07a301b21c8cbb9a7eb8c8e46ffb5388ba8"
+  },
+  "tests/tusz_meta_ttt/test_alignment.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d904b525a781550365803383b1de1960c94cce5fba7aa790165772c76f76e7f1"
+  },
+  "tests/tusz_meta_ttt/test_v2_lane_schedule.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "fb2a8598af1ca89a23f03a4f87b889fc730611fb29e86af2b3d44e3df0bd61e0"
+  },
+  "tests/tusz_meta_ttt/test_v2_batched_update.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7fecc861c69c3895ff5c21db4b37ecdb75fa7dd486f4a5513ff36f5e56d097db"
+  },
+  "tests/tusz_meta_ttt/test_v2_launch.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7f22e82d1d4d5ae08223af3875e413122f80607fbac8b491ef76fa3ade6caacf"
+  },
+  "tests/tusz_meta_ttt/test_statistics.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "dcde3b091679093fe12cf53e4864b599b46109e7b479382d3e51c008f5d842e5"
+  },
+  "tests/tusz_meta_ttt/test_v3_losses.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4c124bbabb4e2e4b66bf9b6cc4f19c44490bcdd878a5b7f32869f5735dcd0ed5"
+  },
+  "tests/tusz_meta_ttt/test_adaptation.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4c0a015d82afa345efee6c70361c035cb78d836331a952d39b1876b0ed6e4a32"
+  },
+  "tests/tusz_meta_ttt/test_v2_mechanism_queue.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "deae8982275a2b8033cc991013d9d2f20a4221ba179434dca7e94a53c19e6c26"
+  },
+  "tests/tusz_meta_ttt/test_v2_packed_update.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "99058a2657a0a0a04cfa4bb237c821106751218fcc403e7559e3ffd9db560235"
+  },
+  "tests/tusz_meta_ttt/test_v2_joint_schedule.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a3b9b01cdf25b1fba7f3ede87891dd20274cb98ebf7f5a42a1ddd290343352ff"
+  },
+  "tests/tusz_meta_ttt/test_v2_training_state.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "80fcf50c0c356c317ec697d8f38b9885ea0080c54ddcb108f5b5ab0888e49e97"
+  },
+  "tests/tusz_meta_ttt/test_v2_protocol.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "44c64ebaaab62406f79f3cccbbbcfd9f269028daaaa1ea8ab9d2dc9f44024e34"
+  },
+  "tests/tusz_meta_ttt/test_protocol_core.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "fcc80a3957a3ef974e386fee619bc9c486f3b2a5c33e8940bb834750e3ddf063"
+  },
+  "tests/tusz_meta_ttt/test_v2_ensemble_head.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6fe6dfbbbf830f34909c1913481a784df9325970e1f9122d0eaa7881f2dc6e2f"
+  },
+  "tests/tusz_meta_ttt/test_v2_batched_objectives.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "9882eb38378f7ac6b474b0b25057059edc2f92c936433e8a44bed5e655fa34ab"
+  },
+  "tests/preprocessing/test_signal.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6f5c86fecc1cec03e8c07feb8e37ef6d38fe91a5186e7184e91c1358a357a857"
+  },
+  "tests/preprocessing/test_tuh.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4e00f028f16d16a64720e7aa5ac58bfa112223c198951957ab0b32ea2d4ac8cf"
+  },
+  "tests/preprocessing/test_montage.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4916259f34dff0cdd310c4ced34e83c0cfd47aaecdd40e7f4a55f5d2528a2d7c"
+  },
+  "tests/data/test_scan.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d0c323bd60a84c9962beccb53de52cd5bf9909289e9b11fdabd17eabc8fc7514"
+  },
+  "tests/data/test_windows.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "842acf556b1d42ba0338c47d94f2a9f1cdfa12c8d04bfa6ecf57a578310429f1"
+  },
+  "tests/data/test_split.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "26175dbcbe2e10a8d4a083c1bedb5e74faf06a4b78a344cbe4cd122039dcd5aa"
+  },
+  "tests/evaluation/test_match.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ef94a68986c97a78870c80a0f3b02d2b9e21b62535582230a1fce57cc58c9f40"
+  },
+  "tests/evaluation/test_eventize.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "94aba5ce5594dbc52a1fc11fadb38709de3775e5404f75e9dea3eedc931a3bba"
+  },
+  "tests/training/test_dataset.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d645d47cf26d7d398a18fc5d73ee86a7a0d765a09c324ce872911a7e4698c8db"
+  },
+  "tests/training/test_matrix.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c2d29a62706f4938fb47585621eec0276b2bb15f1da5dc28c67c9134b3d73240"
+  },
+  "tests/training/test_sampler.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d736e98e7e33eba39d11c410a712e1782ee63580d6760adb64de4c41139e5be4"
+  },
+  "tests/training/test_resume.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ddd21babe33a234cb154a5a9d8acec6cbefc6bb11b513b9ea541d6c90c94af47"
+  },
+  "tests/models/test_precomputed.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c7b7872ac35e3f8b017ae7972eab40fe4291fcf20a2cfb407b29dbde4024db39"
+  },
+  "tests/models/test_singlem_adapter.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "63fdebb1d1936262ce2492576e9fa60375f453e98e734ec284a890c9a60178f8"
+  },
+  "tests/models/test_shared_head.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a6bf9f58e2afe5d0f45d4138b2b19f97cd15479e4d6f2394783a89df19330f75"
+  },
+  "tests/models/test_tcn_gat.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "97f9188112c95654e451e9b31fb6f21e7362e3046bba56bdba3e8f0bc5dc03ec"
+  },
+  "tests/models/test_cbramod_adapter.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "1b58ed752311141d5ef30a0a48f02461ac94c60f00a05c1f5767c5ec39077086"
+  },
+  "scripts/110_preflight_no_duplicate_overlap.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "dc0168f61e34b06a0f825019672dad663dd264dd4001567c931c64c3607db091"
+  },
+  "scripts/202_cbramod_same_patient_adaptation.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "9a041e06217b51db99b15453b358b2103e1818873e58f8dfeb236b44e060e773"
+  },
+  "scripts/204_audit_cbramod_same_patient_adaptation.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3b4293438faf1af1e23721ca4c7debf04cfc21c165fe940d0abfdf297a351951"
+  },
+  "scripts/210_joint_ttt_train.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "39ba17e57fac69b3d3ff8b61be512636af3a70d12726773745013b645851384e"
+  },
+  "scripts/211_queue_joint_ttt_v1.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "66b258b5faab05078afcf0425330b1f35de8042d3c1e9fb459d2b2cada56269c"
+  },
+  "scripts/212_meta_ttt_train.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "889e00dc6f44dac5e6a4c6e14e0af966afafab377b8eb171fcb414eb6ac475ab"
+  },
+  "scripts/214_evaluate_joint_ttt.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a7244939237e65dec7908d4bc870d1732ed5212e603be8797ad0ef5106984ae2"
+  },
+  "scripts/216_queue_meta_ttt_v1.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "42679050a2e8b6e680ae9b1c213dd8a424d3a01275e30887bb59beb3041c0a3f"
+  },
+  "scripts/219_wait_then_start_meta_v1.sh": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "fc6cbc74389b12ec115f60ea691e57c3ca33f37c7941ccc3e3173d11bcd7d6c2"
+  },
+  "scripts/221_queue_joint_eval_v1.sh": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "428c6a8319915240f65ebdc4d758eece6203974bf3e0c994b49d44006356f975"
+  },
+  "scripts/222_queue_meta_eval_v1.sh": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "71c44ca14c181f2b5740d794251a8093a1c6edd432a9075653b61885efa54c9a"
+  },
+  "scripts/223_wait_then_eval_meta_v1.sh": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "6418637d92004c98ee8e4d58e4436c03ebbf1b3a1170f347086f1079ff56b90a"
+  },
+  "scripts/224_summarize_ttt_results.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ac86fb0c5c44940a6707abfd7bbcd4479191100d543855fe0eda8ef013eb3530"
+  },
+  "scripts/225_wait_then_summarize_ttt_v1.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "bf8a4004a713c87a3b04c271fd5a6013e7ce7dcd118c961232861597c24e57b2"
+  },
+  "scripts/226_audit_ttt_results.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c05d6bf794ae28cd2ec73bf1cedebe2efbaae358a6dfc5c6b8a1d1a2a1620a39"
+  },
+  "scripts/227_analyze_ttt_results.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8c3e4be3223c60e5012ba6f2fa0d6167bbc1e6604a50d94536741317fd34acb4"
+  },
+  "scripts/228_write_ttt_report.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8d99009ecd13c2bfa4f40058d600cc1ee0fe97e26b11ee3a46910bfa641b813d"
+  },
+  "scripts/230_run_tusz_joint_ttt_one_round.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "038eed6544e06bc0db39db167c58bc3d0f82b9f567702ad5436fc325c3af7b9f"
+  },
+  "scripts/231_wait_then_tusz_joint_ttt_one_round.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "08bcfb9a4f359d2a6bfa16ea3f1613291cfc9805eed1f623073c910cce645412"
+  },
+  "scripts/232_validate_fast_joint_ttt_scoring.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e86d44e5a1803951f25c86dc307f02a24f7e827e2bc3c4affd89bff618c9bd20"
+  },
+  "scripts/233_parallel_joint_ttt_evaluation.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2b32f81fa9e242594931a6abda2a7a90c033be5be16fdf1e2c2192e2ef4c19b2"
+  },
+  "scripts/234_audit_joint_ttt_parameter_update.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "231ca5004c70cf3a46374cb527587057985d3c6b8fbc4715e4667b95b4b4ed64"
+  },
+  "scripts/235_audit_joint_ttt_detailed.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0e1f9ad3ead8cec008eb2a1825d2667903a6ee9087ab9d6c06272353ca26d7de"
+  },
+  "scripts/237_probe_joint_ttt_probability_drift.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "cbc870822e17ef133f5c1e7e7a8d319abcdd586ad0c048da1e1b05c4f94db491"
+  },
+  "scripts/264_freeze_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ca2581cac866a6bed53d11e2e0a24f6e6f25017661dbfd6b31aa84eaf9d804a8"
+  },
+  "scripts/265_evaluate_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "56d77134346b0e16a1bf6e3997103278a36bfd1429861e76807a86fbd429435b"
+  },
+  "scripts/266_summarize_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "97be4a501c9eb5d30d27d8ffc4d407d08d554bab3c540df2609e09ecb02dd63c"
+  },
+  "scripts/267_queue_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "70686a327be90028c9a1624c5dde2a2b4d510cc43a1d00b5bf148b9f32467d08"
+  },
+  "scripts/268_import_existing_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2fcdcae934120cbdd9a3a229418e67f76bde425cfc4306448a1a1f7ee06e5768"
+  },
+  "scripts/269_wait_then_queue_band_ttt_v2.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d7f9275f1adb29f5157b3ccb6fc31734c42ab3593f820149fece534ae8dd7121"
+  },
+  "scripts/270_queue_band_ttt_v2_paired.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "cde2c993bfe66252b8664033d01e96302e27e5d28b9db299225693a3d89ff369"
+  },
+  "scripts/271_run_band_ttt_v2_paired.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "003623c3b58b0150335fe52d97f42e7cd45d524eb9bed3d05a51c8d724fc91d4"
+  },
+  "scripts/280_retrain_band_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "eaf3f0452ae894b66e58040083560ad471a4a04aec5b8df542c72d679775508e"
+  },
+  "scripts/281_evaluate_retrained_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f3f2822bedfa4891768e92e7dbbc03b18dd5355837fc434e7a625fd7c2da7ae4"
+  },
+  "scripts/282_queue_retrained_band_ttt_v2.sh": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "d51cd46c495afc748e928aed98e89a734965ddc14c7503c4ee6383e4b53f38d2"
+  },
+  "scripts/283_preflight_retrained_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8bb34264476275c712da819dd4b1247a5ab8a6c66926419fbf02ddeec8c37dd8"
+  },
+  "scripts/410_calibrate_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "edab8c33b21f3357db6695374fa65b69841aadd697cd7f25dab2e7442868cfea"
+  },
+  "scripts/350_probe_tusz_batched_tail_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "211f457959400ef5587fbc75828eadb726a56b4a4c93f4347dba01774b0f6c91"
+  },
+  "scripts/340_run_tusz_meta_ttt_v2_pipeline.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ab43b795d7321c5c873c39ae53177d886d9fc8cf44383eac969de7f2e70c6de8"
+  },
+  "scripts/345_monitor_tusz_resources_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "85998adbae3aa3f883252ce059e617aa0634d8719286c16e4525495cfff3b3be"
+  },
+  "scripts/301_prepare_tusz_meta_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2957c75fb7ef1d62ca764fe6c1e4a699baf57ff5ec545f50178403a06d1ba811"
+  },
+  "scripts/359_freeze_tusz_fast_selection_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f4d3b38d3d8fed2a4330a9a9ccce3c8f6b76e1e26c753e050b35c36286d28153"
+  },
+  "scripts/367_finalize_tusz_extended_controls_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "728b935e49cd5f3f50f6f588db8a8d813e7f194ebd17fc3b9f5dd5dc5f1c26bf"
+  },
+  "scripts/361_run_tusz_formal_fast_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0c9992ba546c8d5c3a7f50b2aea5c2a1b262e6d7f0855763f2b1ec24936f0ba0"
+  },
+  "scripts/355_analyze_tusz_lane_balance_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0bd5e9ab714460fe40f2c9d5f715329f7b1ac14400464f67a7201f20d1f7e9be"
+  },
+  "scripts/348_verify_tusz_prefix_graph_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b15373ff7173a20513fd201d7dff55e1d53a945fe00efaa52e6211c05859f438"
+  },
+  "scripts/324_benchmark_tusz_meta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "43dd35dc7844a5e81e958c0bf094f9bce6049f39c72cc6bb0fb8b4482460acff"
+  },
+  "scripts/303_train_tusz_meta_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2736ebce24514d8ace393ad4b8e3a2aad3840604c871167ac3519a7fef1873ed"
+  },
+  "scripts/315_evaluate_tusz_ssl_heads_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4d4e18842ad28eb797578bff279cc96c2bfb38a86202884fedc8be4598451de1"
+  },
+  "scripts/344_run_tusz_formal_parallel_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ccf796d94e14a64e6b8d81abefd54bc21276c1d9a94f96c6f11b19e7fe0e6572"
+  },
+  "scripts/364_run_tusz_development_mechanisms_fast_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f48a4f1e31fd51003243ad92260c25db995ff82552ec662b48a011e12ffb1d22"
+  },
+  "scripts/356_train_tusz_ensemble_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "435d873041a4cdf6a9d9b536ee6e569891170a92974826cbe3c682b0b24a265f"
+  },
+  "scripts/413_bootstrap_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a82f6a503db8b02ebf34df96a654a9b114284b872ee0cdfa2d428abbb39e63e2"
+  },
+  "scripts/302_train_tusz_supervised_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "092886218a1ba8df5e94776d6dbc9e66cf168111860c398aec15be20a1540998"
+  },
+  "scripts/415_decompose_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "5ee244b51a6e538328e414e3a0e720fe7ec6d1da514400b099a7119efe7a5f56"
+  },
+  "scripts/308_analyze_tusz_gradients_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "cadaca38497020004fd6b3837ca6612e068d64b081bc3b7600b62765e73a0a2a"
+  },
+  "scripts/352_benchmark_tusz_patient_lanes_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b7c82a07db94a1fc9427ec5a06ba184aa24604b8a435cae39285b76c9b540ffc"
+  },
+  "scripts/377_run_tusz_meta_ttt_v3_mechanisms.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "98e3119480638010199b1dc97ee33837848afe557a70c57511626b8b0c888aee"
+  },
+  "scripts/416_report_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6a7e6ade02e534d19cf028809481cd570fbafe4a68db41163f69d5615fe5b191"
+  },
+  "scripts/305_train_tusz_ssl_head_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b3b0c0571512bcef17d51a369292e7eadd8000681d16791632de44a9dccaa2c4"
+  },
+  "scripts/371_train_tusz_meta_ttt_v3.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "134e1edf8f4b081d140900e97136d354fbabbb61824d4c098ade1f450b9856c3"
+  },
+  "scripts/317_analyze_tusz_carry_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b6761425400e0c54c27eb91e9ce61399fe05898c7bd8b10e9f9cee2b172dccda"
+  },
+  "scripts/272_diagnose_band_gradient_alignment.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "fdc00493c39cb5f3b58f0a5cdf351218ff2e194c8dc01a56a26cf23166444e7d"
+  },
+  "scripts/332_holm_tusz_secondary_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0730d390e2add6cd00c9b413ea603e1f83d497fc5ee0696f2d488305fee1e980"
+  },
+  "scripts/360_evaluate_tusz_fast_controls_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7c8fce33efe5344cea052f75911ac025872cc4da69cd5c4723e8e8e71e45290c"
+  },
+  "scripts/368_verify_tusz_end_to_end_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0704735e5f9142d26a9d78e902c4b793e53ad56b0404592dd23ebd42f50bed39"
+  },
+  "scripts/320_train_tusz_meta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "509306236eb71830054fae878dbf21a0d69f81b99140cc2359b5577a8e41bd6c"
+  },
+  "scripts/336_run_tusz_mechanisms_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "40ff6dfb87f9b13275bac59c1d6f96f94fd932e53efa35d9a3b750c56f799907"
+  },
+  "scripts/369_verify_tusz_later_truncation_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "66d0fb9ffa94bf2331d36d97e56fd7b72b02cd245777928b1ed414ef94abbb23"
+  },
+  "scripts/381_run_tusz_v3_train_fit_mechanisms.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "45e886b90cd87c27d5a7fb100923b1339ede208650a1826bbba14d59775b834c"
+  },
+  "scripts/380_audit_tusz_meta_ttt_v3_completion.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d3482b69833f530b4bd7b05767f2eb7265bb82d30334b9be70329b1d8726412a"
+  },
+  "scripts/313_select_tusz_meta_short_grid_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e5e1b253004a7ae67c99c4728058d351567ff2de87059ed30a869fe8dba7c11a"
+  },
+  "scripts/335_evaluate_tusz_detector_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "97965ff840ec7e9b417a016c8e56cda6d9d1aca6919a3aab7857c515da3d996f"
+  },
+  "scripts/323_evaluate_tusz_meta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d3dcd37f91a721420118995a483f81ae272ae6c4bc6c03aa621b07c3e7c6eaec"
+  },
+  "scripts/322_calibrate_tusz_inner_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "79415401e32fac3758862955baa5c57c6725e769c3c4fbac7659ee507b5f8152"
+  },
+  "scripts/379_run_tusz_v3_supervised_controls.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3ffba5795b0bd3e953c68a119697f542d7cb63f3ef7164d5807571358a66f930"
+  },
+  "scripts/311_recalibrate_tusz_evaluation_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d586b8cb899e0013997fd69488e0b335484f970ef185c5534c2f2704adf2a3ad"
+  },
+  "scripts/307_audit_tusz_meta_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f5ddecda8cb34f1735f75ffc03341d6c4054e338d1bd8f19935a1723c0709330"
+  },
+  "scripts/414_run_tusz_meta_ttt_v4_mechanisms.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8cf6e2248bdb6fd8eaa3deb261210a5e53d68116c9cddbe2d6f3f35cb8aea3f2"
+  },
+  "scripts/353_benchmark_tusz_lane_conditions_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "46999ad98bb96002440342d23c784a0a4fed576fb6c36118b7d6f5c07bf4a295"
+  },
+  "scripts/412_evaluate_tusz_meta_ttt_v4.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2456dab754d2e001ca59b8c4c23d7fac3c370b3c87e26a54f3d54a0cbc71e7a4"
+  },
+  "scripts/357_verify_tusz_training_resume_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ccf80fb8a357692dd4b12bd8b604799205a4d091ea1bc5b608f1264334a6c3a5"
+  },
+  "scripts/366_compile_tusz_fast_results_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ab988592a79fe0cbb5864a8f2e906223c7a27cfbc055780bd52fcee468964aeb"
+  },
+  "scripts/349_analyze_tusz_performance_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "68f64dcd6058f922fcd75f17fc96a545d8f98e61ef87a7785792fbc54cfbade0"
+  },
+  "scripts/365_run_tusz_mechanism_companion_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "c1b6afafc2ba775c6bfdc191088cd38c67df38e27bd7d2ae52805b0bbe5e3d2a"
+  },
+  "scripts/321_train_tusz_ssl_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3913a5c8d10e0cbd0e3e8936364d309b3d9a3ed992be77399e60d82a1de71ffa"
+  },
+  "scripts/375_evaluate_tusz_meta_ttt_v3_development.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "081e995e12a4c33df37d0679844760b5e3470e48807868832e469994dc9ba9ad"
+  },
+  "scripts/360_summarize_tusz_live_throughput_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ef5bd018c4659db97b41ae5a65e2dfa4f173d08f48e8c189318baa840dd04ac3"
+  },
+  "scripts/339_compile_tusz_meta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "fd26587b82808a45c5793354b51ac22c8e87369ff9417f168d38803148d61ee4"
+  },
+  "scripts/318_run_tusz_cosine_alignment_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6214994f1a16883d543a24653d37e1846011ec3dc97902f972bb3461225ed8a4"
+  },
+  "scripts/342_verify_tusz_meta_ttt_v2_completion.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a1877d6cd9d999f184318b6ab1abb266bd6cf811e7f790dfd84b23b9744b5630"
+  },
+  "scripts/304_evaluate_tusz_meta_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b77d949aec3c42c0743cdcef6ee772a24bf1063222f98eae90093c5f27328eb7"
+  },
+  "scripts/312_run_tusz_meta_short_evaluations_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f3e63e35bc311207782937c3666b54928bca9a50c12de48ce9348bc29fc3a2a0"
+  },
+  "scripts/314_run_tusz_meta_full_development_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ec2b23609ff33c07c27e543bae0c80eab3f1dc51efbe99f0ffcd59cbd4320c1c"
+  },
+  "scripts/328_analyze_tusz_gradients_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "9edb3aebb514aad71053e9fe8d3432d7b26d1f9ecada3d8f5d4a249471b12e81"
+  },
+  "scripts/331_run_tusz_ssl_stage_b_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "71f07af4d2b9182ba555073947f041f4ddb35108215ab9c99b4a2dd793414a7e"
+  },
+  "scripts/205_audit_cbramod_prequential_calibration.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "cd7fdfccfcd6b608555a81d1c683a50a324395b1146f8444d8f5b7bf93ca90b9"
+  },
+  "scripts/370_verify_tusz_threshold_lock_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2373c1df017231baab632ced84fecca19c1c98a788f5412a19b3bc79e94829b4"
+  },
+  "scripts/334_select_tusz_meta_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "5883f767887b01fa785aad8bcb2235a35400d2fbf67f9d016ff42bdfca425ada"
+  },
+  "scripts/319_run_tusz_eval_ssl_alignment_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ed91b7ef91fd6f89cb717b05648f321e39736bb4c29bd9f96953b1c99193b27e"
+  },
+  "scripts/338_run_tusz_formal_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e7bcb9afc6d666aaf25d5c86bd1d69a9b7025b28f9e08c2a59ccd35403799f25"
+  },
+  "scripts/333_audit_tusz_assets_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e3c910b1d65a70813f68063df01b60929ff8c2c9c4ee9f73c9e168649425395c"
+  },
+  "scripts/309_materialize_tusz_signal_sidecars_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8b2d7548717770b9e2e1cd0b052ca2efc1ebd284bdb3ec76623e32e19dfc4379"
+  },
+  "scripts/330_bootstrap_tusz_meta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7260465da08c00ff232790ca233a60068fda98617be49f549f94c77021b30514"
+  },
+  "scripts/354_benchmark_tusz_condition_ensemble_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "5b537a1429e76f42991958baa6460f4ab940c5196d0f37ef440fd5ade5eac11f"
+  },
+  "scripts/251_summarize_neurottt_eight_alarm_time.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "79aebfce22346ca04c0d2970d5d8ec3cf8c6fe320511d5693675ad6f6bd6c3b3"
+  },
+  "scripts/343_benchmark_tusz_parallel_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a93f36b2c7d97eaf6fb8f0dad421ab4b47d9196c152dc10b1bb12a963223a5a0"
+  },
+  "scripts/327_run_tusz_meta_development_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "19aa8f67eef84078e557e54302c027f06301d242a0691f72815a1786b06fbebb"
+  },
+  "scripts/411_train_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b22488bbda422959f1681be70eca47f5dbcc633f985263c46361f1366eb73530"
+  },
+  "scripts/363_run_tusz_statistics_fast_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "8ad6dbd2a2945147eec9c97f0f6d8019f0ce1f45b086cbc986edb6f0651a7e99"
+  },
+  "scripts/376_summarize_tusz_meta_ttt_v3.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "b5dfdf0539fd5860b96da92dd2088d2fd4070def62d5e6728ed0ed07a233e935"
+  },
+  "scripts/300_preflight_tusz_meta_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "3a8fcf10d75fe02353247e0aafb0f3b11c08c4c6c97b1afce806de1513561f17"
+  },
+  "scripts/03_build_manifests.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "422b7848b2d2b2dca3dcd151c572f78fbf0416607c4704e1a59a1aa344bfaa2b"
+  },
+  "scripts/310_run_tusz_meta_short_grid_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "4b0fa153416b819fa4a3a26955e9223b136d947d99a900f5cf59f9256aa498f5"
+  },
+  "scripts/326_train_tusz_supervised_control_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "831e81a57bea2f49b64c3798f6a441367052567e3d90a7800a711488d7466cd4"
+  },
+  "scripts/02_download_chbmit.sh": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f37ce4a382d192858831662dfae6cd55a828d8ba14821423c247cfa08ff8fada"
+  },
+  "scripts/316_run_tusz_meta_full_evaluations_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "61c964c9cf1cf98c302cc12bacfa18f340000b3169e2d8f14530da1749773ef8"
+  },
+  "scripts/359_compare_tusz_deduplicated_checkpoints_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "e03821f9bc0f4697149e14878773aa04113a642c6be6bbb9bf3506d6f93d2507"
+  },
+  "scripts/306_train_tusz_joint_ttt_v1.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "efda8222aa9dda489fd26991c308dbe8c56981556e0faf56dd015cd87d55b319"
+  },
+  "scripts/347_profile_tusz_meta_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "f9e6d2c7727f7fcd0bdbac6ef0a4656d9ca6e8deaf9a09a1a1f1da3727f6d41a"
+  },
+  "scripts/03b_build_windows.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "06e0da7f98b732f45b41a6e718992c583794944bc4d28d5a78d344c67488b177"
+  },
+  "scripts/401_rescore_tusz_meta_ttt_v4.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "ef5fb3648e6ea4ac2ae7356bd7b277aa324d856b26f15e9e1707c27f61696276"
+  },
+  "scripts/325_select_tusz_ssl_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "1e3f7bc68145941892479bf7bea6e47c1c55ad6273dfaf71fa21b5d26edd1b8f"
+  },
+  "scripts/329_package_tusz_nonmeta_ttt_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "081fa280c8c5a170fb19fa4cafe9b554119fcd3e4d5ce1016c5393009bc094fa"
+  },
+  "scripts/378_decompose_tusz_v3_outer_gradients.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "a7d82f1f29516558ba2f3c5a1423d08b8cc200cf7e825f0d8ac996b2992ed81b"
+  },
+  "scripts/358_run_tusz_fast_development_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "16e7f62d61abe57f6fcbfe6100444e51ce355ed1b65cab11c40a7537cb12a3f1"
+  },
+  "configs/tusz_meta_ttt_v1.yaml": {
+    "origin": "current-research-checkout",
+    "source_sha256": "7747c89aebd66c388f5074272e5496c47f567e49b6c8e35c246339f17b62ad9d"
+  },
+  "configs/tusz_meta_ttt_v3.yaml": {
+    "origin": "current-research-checkout",
+    "source_sha256": "04b17bc390d6ad3a72b998a746cf1efd7f0d9badb2a9e201a79e135044593f06"
+  },
+  "configs/tusz_meta_ttt_v2.yaml": {
+    "origin": "current-research-checkout",
+    "source_sha256": "6366a47280a62f7f8a2b986b846e1e2b20512cbb4558bb1469e0f9730a7d79b2"
+  },
+  "configs/tusz_meta_ttt_v4/unit_loss_scale.json": {
+    "origin": "current-research-checkout",
+    "source_sha256": "0bb0a8591d0fd21f8d9b8309473572c45dc9e8004431c788c8a461e6fe1106ff"
+  },
+  "protocols/tusz-meta-ttt-v2-performance-lessons.md": {
+    "origin": "current-research-checkout",
+    "source_sha256": "940ef2a4ef6d67be5043ce04ed0f48bb42dc8d7c46e5fd5e1155b5aaf75550ab"
+  },
+  "protocols/tusz-meta-ttt-v1.md": {
+    "origin": "current-research-checkout",
+    "source_sha256": "2de94106fb5f006428424e6f727d79fdd21bc144dd7f79ac30303cbb2c0f9946"
+  },
+  "protocols/tusz-meta-ttt-v2-performance-revision.md": {
+    "origin": "current-research-checkout",
+    "source_sha256": "5bdd6b09a7908f0c2f0686094403ff941c5c4ef996006703ef76cf537734bf6c"
+  },
+  "protocols/tusz-meta-ttt-v2.md": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d5a11b2b65337797dc5efc9828dc93353849bd4c2cfe11b1b894d8794adeaed7"
+  },
+  "pyproject.toml": {
+    "origin": "current-research-checkout",
+    "source_sha256": "9ba916f6754365becb5ffebc186d98800fd9534f63d53800854102f239e8d86d"
+  },
+  "third_party/CBraMod/models/model_for_shu.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "ef0aae9ce432fb33b82341fd76c5fb1c0c9c0ab8a76b54d071d01cca35028dda"
+  },
+  "third_party/CBraMod/models/model_for_tuev.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "29df3cad926996f17771bed3055f57899d61df23ba04533298f006ec04dfc1ab"
+  },
+  "third_party/CBraMod/models/cbramod.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "caa7c5a0e4acd488a6f625b56f7b54dc4e7190d6b68ef5b76dff2cef86874a14"
+  },
+  "third_party/CBraMod/models/criss_cross_transformer.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "90e90b8c98ca7eb543c44e32afc29674d3f71cb090692ad9f82db3a43edf334c"
+  },
+  "third_party/CBraMod/models/model_for_seedvig.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "df7c7d77887803c36132192574eb817016b71cb080c2bd78e679e493580b52a2"
+  },
+  "third_party/CBraMod/models/model_for_chb.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "5346a02842e0539133f9b975b3cc43eb8f298fe2451a97f174205d5f95df80b4"
+  },
+  "third_party/CBraMod/models/__init__.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "third_party/CBraMod/models/model_for_faced.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "0f711a8d117ba0222995a33f6a6dfb2b8d3fe7a219ce0528a71917e5d8082513"
+  },
+  "third_party/CBraMod/models/model_for_physio.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "ad4e87d12c968e24795117776a22da1ba42afa0cfd9a28e060ccaf174432f094"
+  },
+  "third_party/CBraMod/models/model_for_speech.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "84bc0db76015072cbb8a1a497dc48f31a33abd2a9b396de4480054f63999fa30"
+  },
+  "third_party/CBraMod/models/model_for_tuab.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "0f1b544d079c66231dcaad4344b468fbfdf3ac28eac566bf69d67df93c90851e"
+  },
+  "third_party/CBraMod/models/model_for_mumtaz.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "6665f3683b4dca108a7b540871231dffb9902c03e03d10f3e31d787b4711b8a0"
+  },
+  "third_party/CBraMod/models/model_for_bciciv2a.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "a7d720d2c1603cffdca4485d33d8f3d1db66876c9b9e48dd18f063af5e65b297"
+  },
+  "third_party/CBraMod/models/model_for_seedv.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "38fd14adac5c1462316a0d270654a28f36aa20ca5ff79e4730e04dc522fe225e"
+  },
+  "third_party/CBraMod/models/model_for_stress.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "173e584be22451f446ef98189d1774f808233d34f3a04056a044b44dfb164805"
+  },
+  "third_party/CBraMod/models/model_for_isruc.py": {
+    "origin": "CBraMod-0ff6be918985689e7df679bc731ffb70e6c6224f",
+    "source_sha256": "2a516f4758275ef7757a17fd22337db32bda751b72ebba343e90d91578544d61"
+  },
+  "third_party/CBraMod/LICENSE": {
+    "origin": "CBraMod-upstream",
+    "source_sha256": "eb839b706e4d7219842e96d7dc33285844abc794292602deb3498be7b699537c"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_band_continuous_gradient_audit.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "cfb914c84071fc69fcb1a65f6cc6a15d0540ce7c407c809c97dad178e5cbd75e"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_band_gradient_audit.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8ea76f9fadebe5ba305748043792339c94c99340e1c50f511886b29a6096d757"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_band_independent_eval.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "a2fde9cb490e092702e7e6116958e2ca49c821437eb7cb73731079889fd6c67f"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_band_recording_context_eval.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "bb0927d10c498bb1ebf9fc7fb65dfea10601361b7dc8f5d4fdb4c2fb146bba6f"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_band_v2_smoke.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "57ee887f2fad1c556bbd9ddb62b6c6ab77a8849b1dcc4e7f8bfe8a1410893498"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_benchmark.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b5006a92181833411ee7325e6ca1027d22e8ce6185f1dc474f60dc5d598a9f11"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_evaluate.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e75858b3908cab2ece9ed730e5545ede5d0d949f005f9d690e9ae2bdd5b3a601"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_eval_queue.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c3c19973ff42384fbce3ae10286e482215fb1d30b735eb20a0d57bbb910d778e"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_evaluate.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b7eab16ffec0fdff957227cf1f7f3062783ff1de9c8215bba122a48f01f5e305"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_eval_queue.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "17a441de4f54de770767bde4e91da36d036fdca62a8f6fde9e7653fd465e94ef"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_preflight.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "42ac5483fcf8c643af741685939345dcc69ea09cf74b7d75d6b58d22cada5f9b"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_queue.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c992dd811c5203b44403b319e8a9790a59c895c2861d0c822ccbcc843cb30ac6"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_smoke.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "9cbfe8d0fe5105d616549438ee3270bed05c02800d5b05c5cf7e5fd2be93012a"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_summarize.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "83def6f96848483c1abaf0f21d61d458b689d87aeeb1e46973ce0d2d6f6c11d5"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_meta_train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b62cfd1f3d20ebbaaad10cf0ab74464f3d0223a3be3351f40b72762da658a084"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_parity.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "692e819c68ac0d5ef39ee7e4528bc6e76c2f2b397e0ed1af3e9e04ed3642575a"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_preflight.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "4c7285e83b2e18838554f1b8fa8a03e30c77f11bae6b86044b947c37e89c53dd"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_queue.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3e5e8a2c64809bdd3229619850d46324287d4b164f671bc341fdee445f05492"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_summarize.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "20175fcd67a84853ca3ea06ea1760a70190c4b343a6cede3aa71548a0a9d4e40"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold_train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "75d527b4856fdff03eb2419b0fa536d24fb336e170a2230afd4e2af5e6326118"
+  },
+  "external/NeuroTTT_CBraMod/finetune_evaluator.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "ac456701db78e7d770ca488daeb7fb939cc153dbbeddfaf8568efd1d7dc2ce03"
+  },
+  "external/NeuroTTT_CBraMod/finetune_main.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "df56f6ec509364f7c77193c03caedaeef5119ff0eafe3b186682e602e0db4cbb"
+  },
+  "external/NeuroTTT_CBraMod/finetune_trainer.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "755a31a196e908e011d59addacfa8de9d7aedfdef482bce94700360187eb53fe"
+  },
+  "external/NeuroTTT_CBraMod/LICENSE": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "4b58be30c7b2020e2bb1d8c037730fe33e92fe04d9746b373427f6cc6288f3ab"
+  },
+  "external/NeuroTTT_CBraMod/pretrain_main.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "25bfaa3a0ed7c7546621b181d738a8bcf53602a5771224ef30042ac8c09fa85b"
+  },
+  "external/NeuroTTT_CBraMod/pretrain_trainer.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "959c1e0fcdb17b14e46622095b7cb8da49b2d83f85db7a532ca6ec14a36a427a"
+  },
+  "external/NeuroTTT_CBraMod/pyproject.toml": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "694cb41c3d468b12d052eb51dfcb3ec6dcc4aab81a9e0cebb897147cf81c0a44"
+  },
+  "external/NeuroTTT_CBraMod/quick_example.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "3a16b146c28e774f60768dade7357adb86b7bce1a779612a53a1d831ac777f21"
+  },
+  "external/NeuroTTT_CBraMod/README.md": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "512db4d4148e1a8a1df821ad5648301e92f28ecd5b72edf800064856f176c05b"
+  },
+  "external/NeuroTTT_CBraMod/requirements.txt": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "90e8dc08d1a85f35d735cf452697e89fb93a48ef78d41ac08d4e9a98045d5657"
+  },
+  "external/NeuroTTT_CBraMod/shot_main.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8069333d3e328251ad4ffa5bd4a80d58b5f99958e60cf2ad39fcd24e57af2b9f"
+  },
+  "external/NeuroTTT_CBraMod/tta_main.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "17124dd995106befb9d9f28d1436a258337e0aa6d4268bcfe9f35a75807f3a30"
+  },
+  "external/NeuroTTT_CBraMod/ttt_main.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f1454d7d7dcc9f8f0e96c6209cc5eb8b7cf7267534c984b8f05d44ba810d45e9"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/band_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "0d1818b771bec161ad67d8a57df62ddfd5b7dc39c5f73f46f1dce4e80c99f268"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/benchmark.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8a3108e428ede2196860adf10a88c3dadbcce80259329fcbc0ea542926a724ee"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/data.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f528fe75922a194178ee10bc7b8e8b6266eb76270a82907acd17dafe8f1f74ca"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/evaluate.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f73003c660b5fa8a9a86b8631234fa905eec0c14cf79fa187545b08428c07327"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/meta_evaluate.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5aa466a7bf5593157c857cfd7f6c3b4a48fde22f50310c55e4f7f7ea4af1a6a2"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/meta_model.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "46399693e921aa32b2929bd03e3b98ffcddecb87b800ef82098c6f2cc53b4d76"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/meta_summarize.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5e33d72086fc7836f0e5abb28adae0339d30151ecd4698c1e6cc1839e835fa2e"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/meta_train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "10b733172d84c6aa5e82b622a6e539f653a219b560d7d1cd184cf454667e862f"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/model.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c85cd94f76335c296f655f9dc6a3da35c2e1a9635d1d00ab3277f3bc9994b757"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/parity.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "0eaf8c6ea27c521e436e2b97c76a25686b026a5cd893dc0888e4749b75ef6c52"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/preflight.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "4f2ed356b7ad3faa3eb0a1b97402a03f67cf18f78e2717b662615451c6f3e282"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/summarize.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5b16e41917cdde8d7cde831890ca77e53d512a4cf7a56b19c9cf53ac3a9d3848"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "6c8e6595b9b1a6eb77ef2ee71c4563858cac2b8bc70eb7e8ec724cbc8065dda2"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/transforms.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c743cfe67b7b271b79d1d1e0ba4dc985cdae8250fcb678e0059f4ace4302edd3"
+  },
+  "external/NeuroTTT_CBraMod/chbmit_groupkfold/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e2e30b09464233eb5e265ea0804e448b02be0d9c1e619503dfe64ffdb6bef2c1"
+  },
+  "external/NeuroTTT_CBraMod/datasets/bciciv2a_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "bbf1c6f9f46eaa0b9b8bda55d8b0743a53c0fbc48146defe883ec9ce124bac7f"
+  },
+  "external/NeuroTTT_CBraMod/datasets/chb_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "752ca3b7c9b4a44fb4b1e457b2e2c1cf52d3cc67e22775410e51426b78275474"
+  },
+  "external/NeuroTTT_CBraMod/datasets/chisco_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "25f9495e4d10979508db90514388c722030946a872fe5a7a602ac1188556726b"
+  },
+  "external/NeuroTTT_CBraMod/datasets/config.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8bfac1483098a7ddf7e48d70249cbce9398c48d015fe901a541a823fa490df10"
+  },
+  "external/NeuroTTT_CBraMod/datasets/faced_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "69fb622ae8f85840f7762eb8da98cc0d1256b87fb669284d5c6c30f7d9d12be5"
+  },
+  "external/NeuroTTT_CBraMod/datasets/isruc_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b63e745ea3316cc6593274fd3246673863d36d4b0a12971dabbf318ecf05cba7"
+  },
+  "external/NeuroTTT_CBraMod/datasets/mumtaz_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "dd985477e70c70923c894de0f7a1963670be489790033953486438515ee07fda"
+  },
+  "external/NeuroTTT_CBraMod/datasets/physio_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "80027ba2474726924fbe181d747798631b28ff61d5ce927f0d65c30074464f06"
+  },
+  "external/NeuroTTT_CBraMod/datasets/pretraining_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8987e0930fa869428f7edc59e2c4d4b52bf15b4112d233e37ad9fced4c0dc61b"
+  },
+  "external/NeuroTTT_CBraMod/datasets/seedvig_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "641eb8dbdfe352ebab0731c2df03b95f04c3f6ee495160763d41cde051017895"
+  },
+  "external/NeuroTTT_CBraMod/datasets/seedv_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f28d7ffe4d34844e283dbfa4626ddcd5dffebfff7ac6d8f3fb2fc06443fe5315"
+  },
+  "external/NeuroTTT_CBraMod/datasets/shu_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "9e693acd18d1b74a23d94b6cef68d00637a0f521b4bb7a5aab786ccb5170e6b1"
+  },
+  "external/NeuroTTT_CBraMod/datasets/speech_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "56befac030dc9b4846c3ffddd0033e7116ff4664c1556608e671186024197a3b"
+  },
+  "external/NeuroTTT_CBraMod/datasets/stress_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "cb4afc801db197785b2931c68b1bc89457ae26419999250d4c8d9f12ef8f9959"
+  },
+  "external/NeuroTTT_CBraMod/datasets/tuab_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e03fc05499f5dda4a1b94167d54cc9e3c96452668dbfce8061d05aa711ec2de0"
+  },
+  "external/NeuroTTT_CBraMod/datasets/tuev_dataset.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "72a6586a23ab8513e573eefbf05ab4d056da55efd5d696f19e8a551dc88663a3"
+  },
+  "external/NeuroTTT_CBraMod/datasets/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "external/NeuroTTT_CBraMod/models/amp.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "747431444b4cd0f2449d56de090335b95ad7b499f7cca54301c97bb4fce69644"
+  },
+  "external/NeuroTTT_CBraMod/models/band.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f9cb5315ee7b69450d180ef13eea20ba5c6b27fc47c5ba0c452860a06d98e57a"
+  },
+  "external/NeuroTTT_CBraMod/models/band_for_mi.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "7e2a6c9d4fbc23bc6eb62f75c311a052050759968db7c753adf81688d515c210"
+  },
+  "external/NeuroTTT_CBraMod/models/band_for_stress.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "0ff72acd5fcf1aa5701c051fe418eb7dbd8f21e36a2b862d6990d574b0c4995e"
+  },
+  "external/NeuroTTT_CBraMod/models/band_isruc.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c9dc060fa3e51af266005953240a82ff0aca7e15495a79b01edd9ea116a84e80"
+  },
+  "external/NeuroTTT_CBraMod/models/cbramod.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "57019e52336137c7dee253ec38663f78905553370af596a125fe4aae142c3357"
+  },
+  "external/NeuroTTT_CBraMod/models/channel_for_stress.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b2fc593cf96839843ecc5c9e02f41ae74373f9ffdda2438dd436c271b2ac5825"
+  },
+  "external/NeuroTTT_CBraMod/models/criss_cross_transformer.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5eb3c4c93c1b530a8cbe3ad3d0e217c63d9bd6419553fdfd8eae46223df7950a"
+  },
+  "external/NeuroTTT_CBraMod/models/filp_for_shu.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "9fc02e81e1be8f48e3f961cb5845a43060890a51b817f56a6db1e9e43d27f687"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_bciciv2a.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "fbf2e9ba2ba95f5e4cf231f12b131ff2bfa3b49289b57d7868b219f676625dda"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_chb.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "98320a9fb54233e9feff29f06275b2f5440e0ed9b687df1cfd186169ee27d21d"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_chisco.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "d57eee17dc75565f866b21f3cd733a42ef9127338b5452486ca017078062fa10"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_faced.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "3d6bf8bb9fdd2d625ba139d5226c9278419684ce36f5a86e5612c0ffb3fd4b84"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_isruc.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b9f1d93650ae8810d9038168250b99a4238cfb092295b2e3f6a840d5cd442a54"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_mumtaz.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "3ec7600251517f950f76ac79f68c328fca31d13377e3a434e6d157cdd92dff43"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_physio.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8fa7f8fce537bac9b6c9f3ee795167f09a96a6f933e62b9c4f11b45ce5b066a1"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_seedv.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "fc72d68e9c58126ce0628b352c0251db4e0a4fb1c97838d16bced041e319730a"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_seedvig.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "0d8ff000c53470dba63bf0e372bb6b8598943f25c67e8aa9348732539dd9ba27"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_shu.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f00f04e736b7c6988a92189a55041c39392b40d7260c3a638f24ef52df749ac7"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_speech.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8c1af8b28a38cb94066b2710a389ec22e16b9ad7d2acb89b1aa6f4952a3fd2f0"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_stress.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "abf9a894db5205cd5cdca979a5f7d519a80c68a3e863b33ce9b98d360c4289f9"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_tuab.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "709c64c928e2187d16d8c409d90ee5fec14e1980f3403d8088a4af4bcd29bda7"
+  },
+  "external/NeuroTTT_CBraMod/models/model_for_tuev.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "6b288902b5784dc21088430e124206251eab0db37b9f83b8b584cf4ddec678cc"
+  },
+  "external/NeuroTTT_CBraMod/models/phase.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f751bb697dd7a3159b14518324150186eb1fe5307eaee42693d0525529181f43"
+  },
+  "external/NeuroTTT_CBraMod/models/phase_for_mi.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f751bb697dd7a3159b14518324150186eb1fe5307eaee42693d0525529181f43"
+  },
+  "external/NeuroTTT_CBraMod/models/phase_for_stress.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "be0271417a9279e30962e6f3bdff83a364e0157501ee65abceed664c56ef13a4"
+  },
+  "external/NeuroTTT_CBraMod/models/reverse.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "b89e887ac85d45d2d6aef5e84e7b0bd6424355d2525aea1513b67c0125d7dfd7"
+  },
+  "external/NeuroTTT_CBraMod/models/temporal.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f3da946f59d343768a207423a5ec3a841fb82a65aa2e86b76db048385882533f"
+  },
+  "external/NeuroTTT_CBraMod/models/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_bciciv2a.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "cd0e4cc02a852635066e06a36ef066683dab6be1d43e1698e641cc99c58cc516"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_faced.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "71fb64b47e429e5727d19fba5117f1154ef5e5951243b33ee0bdec69294f0056"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_mumtaz.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5251d8be1b58f78b22f30327f0ce638c44ff6bad4f7d5b589bcb8c48f3dbba77"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_physio.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "cc3ae528004f55497829277463179011adc3f673180d688170126040a500923a"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_SEEDV.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "8c5964e967d33308a636292e1a5f1792eb88cad45a9d714711012a16acc25afe"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_seedvig.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5cd54e9d0c18d69e94318926afe27461f95d13f5533a126881c9e27d70227e33"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_SEEDV_jump.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5c6ece4e27865d9da2156a9627f73477a4287e77f25351eebfe417c089fec866"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_shu.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "be0d11ba1d1f025d92f5b01b00cab0f025a8c3087f9aff0bc87c97381dd8be73"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_speech.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "1ed6837c199ba6d7614ea1576454fad7c1dbc3a169dfa7ae296e7b2d6a728b99"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_stress.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "bac524364a58cfb8ce413fe7b7d25d1a9861271793b57ebec5e6cf614fc17d41"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_tuab.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "d5e70c8bc1ef55184da347f9090ae8f8d77fb05553814bb78369607dcf858974"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_tueg_for_pretraining.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c68886ec2baec6e585bf92771e60f6b7572c0dab72033f21b31675f2b47ba736"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/preprocessing_tuev.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "7ee7001ff8f07fb79290711a01fdb82d99ae8bb8df767be5e0ceddda0b1dc607"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/README.md": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "94297eafd20d68e7576239821d7c9ae776efec268474d0cad1916423bd880804"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "external/NeuroTTT_CBraMod/pretrained_weights/README.md": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "7d08871d87f5a4a3f37bcd3e07a2ed5405cb295b0be89b36f6d87d28bcac4c1a"
+  },
+  "external/NeuroTTT_CBraMod/utils/signaltools.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "ad6545b9b617ff4c23a771b23dd63e43c9ff2f64f240f2b6bbc00210c85593cf"
+  },
+  "external/NeuroTTT_CBraMod/utils/util.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "05fc960a36d1706ad79fd27dd7c2181000a7cf6ca63c337cfcb3ce10cb1e0d5b"
+  },
+  "external/NeuroTTT_CBraMod/utils/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/CHB-MIT/process1.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "6f51b6c2f5274f261a4ab3c2ed3e7fef4582e91526404e05dcd1f4cda6365591"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/CHB-MIT/process2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "87fd751c1b62eb090a950a41e0a3c933f25a19f84cb4e930edf8bf9e90c44305"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/CHB-MIT/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/ISRUC/edf_.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "7403e73d44adf14f666b2504bf3160bc468107eb04c04788e9263fddffc320f0"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/ISRUC/prepare_ISRUC_1.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "868337a89ea7d5cf99166d45c9972b90b21eea819b59ff2dd19ee1f67e5cb758"
+  },
+  "external/NeuroTTT_CBraMod/preprocessing/ISRUC/__init__.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "archive/chb-20260905/scripts/202_cbramod_same_patient_adaptation.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "89d5683213ccc37c2dbdf619cd9425d1c9354daa109871e3be6290d824ba606e"
+  },
+  "archive/chb-20260905/scripts/210_joint_ttt_train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "29e2efe45fcf112e40d92737987696f6c45fe1819980f99f5152d16d91601e2b"
+  },
+  "archive/chb-20260905/scripts/212_meta_ttt_train.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "3d3cdd3c2c91ac85ed8acded2fb4cb528d4609e0311c7e509f5c6a011dea1b4b"
+  },
+  "archive/chb-20260905/scripts/214_evaluate_joint_ttt.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "3a5bbd48f03d4fc25c09f1f0a00a52a86a37cc086e13412b1a16a2590693061c"
+  },
+  "archive/chb-20260905/scripts/264_freeze_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "fc9c5d2722f09b83facdf22d06ff19dd5d791fce2a08c173915fc40b0e73cc94"
+  },
+  "archive/chb-20260905/scripts/265_evaluate_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "762718dc83b8ced2fa13e96aa2962a624c97a751a68718a6b64a450640e22c0c"
+  },
+  "archive/chb-20260905/scripts/266_summarize_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "9a693dfab0f6e2d5a670eda413a30c21f526261b208b40ffffd36dba440469d7"
+  },
+  "archive/chb-20260905/scripts/267_queue_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "2ec3df480c1d684bda177415db94576262c49eb11d6d1ed104b5b6a43272702a"
+  },
+  "archive/chb-20260905/scripts/268_import_existing_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "f9ff22448af5c1d76cf5b6b3298502c9d08eba8c445278702eee75fc98788ce1"
+  },
+  "archive/chb-20260905/scripts/270_queue_band_ttt_v2_paired.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "5d8ae10c40c99713aee4a1d83b0e0ca6ce55857b1e25d9fecb8e5cb3c8ed9515"
+  },
+  "archive/chb-20260905/scripts/280_retrain_band_ttt_v2.py": {
+    "origin": "chb-migration-20260905",
+    "source_sha256": "c69ed63e4fc9e4efc7a677f5d191bbcfafdc0c4c991da999bcb7efb823c214c4"
+  },
+  "scripts/346_verify_inner_sync_v2.py": {
+    "origin": "current-research-checkout",
+    "source_sha256": "d7db03f011c98bda845ac973c9d6df8a816e60d1838f1661371ec7efd24c05b5"
+  },
+  "scripts/61_run_baseline.py": {
+    "origin": "current-research-checkout-dependency",
+    "source_sha256": "5c10e25ff1ba6eef4f39a51b15dde037de286835381e0e36b132da62accc8306"
+  },
+  "scripts/64_run_conv_baseline.py": {
+    "origin": "current-research-checkout-dependency",
+    "source_sha256": "ef509b6fc12f9a0301a6fd5b159e503e1fd42a2a7cb405f88a8d79c1636e9297"
+  }
+}

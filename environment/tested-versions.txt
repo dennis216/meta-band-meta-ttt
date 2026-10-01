@@ -1,0 +1,13 @@
+torch==2.14.0
+numpy==2.4.6
+scipy==1.17.1
+pandas==3.0.6
+mne==1.13.2
+pyarrow==25.0.1
+pydantic==2.13.5
+PyYAML==6.0.3
+omegaconf==2.3.1
+einops==0.8.2
+pytest==9.1.1
+psutil==7.2.2
+tqdm==4.70.1

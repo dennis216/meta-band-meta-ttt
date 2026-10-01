@@ -1,0 +1,82 @@
+protocol:
+  id: tusz_meta_ttt_v2
+  seed: 3407
+  confirmation_seeds: [17, 42, 3407]
+  active_confirmation_seeds: [3407]
+  remaining_confirmation_seeds_deferred: [17, 42]
+  reuse_v1_cache: true
+  strict_raw_to_alarm_causality_claim: false
+  assumed_update_compute_seconds: 0
+
+data:
+  v1_namespace: outputs/reports/tusz_meta_ttt_v1
+  development_source: outputs/reports/tusz_meta_ttt_v1/runs/supervised/development/s1_seed3407_check0.25/best.pt
+  formal_sources:
+    17: outputs/reports/tusz_meta_ttt_v1/runs/supervised/formal/s1_seed17_check0.25/best.pt
+    42: outputs/reports/tusz_meta_ttt_v1/runs/supervised/formal/s1_seed42_check0.25/best.pt
+    3407: outputs/reports/tusz_meta_ttt_v1/runs/supervised/formal/s1_seed3407_check0.25/best.pt
+  channels: 16
+  sampling_hz: 200
+  window_seconds: 10
+  stride_seconds: 2
+  chunk_seconds: 30
+
+model:
+  adapted_blocks: [10, 11]
+  detector: [2000, 256, 1]
+  outer_scopes: [e, ed, es, eds]
+  modes: [future, current]
+
+ssl:
+  warmup_epochs: 2
+  band_depths: [0.25, 0.50, 0.75]
+  temporal_blocks: [2, 5, 10]
+  mask_positions: [3, 5, 7]
+  learned_loss_enabled: false
+
+inner:
+  relative_steps: [1.0e-5, 3.0e-5, 1.0e-4]
+  gradient_epsilon_fraction: 1.0e-3
+  degenerate_gradient_fraction: 1.0e-2
+  trial_scales: [1.0, 0.5, 0.25]
+  armijo: 1.0e-4
+  maximum_record_relative_drift: 1.0e-2
+  truncated_updates: 4
+
+outer:
+  encoder_lr: 1.0e-5
+  detector_lr: 3.0e-6
+  ssl_head_lr: 1.0e-4
+  weight_decay: 0.01
+  detector_freeze_first_epoch_fraction: 0.25
+  patients_per_step: 4
+  class_mass: {background: 0.5, seizure: 0.5}
+  minimum_epochs: 2
+  development_screening_epochs: 2
+  maximum_epochs_for_selected_followup: 5
+  evaluate_first_epoch: false
+
+evaluation:
+  target_sensitivity: 0.80
+  minimum_fa_reduction: 0.10
+  noninferiority_margin: 0.02
+  threshold_quantiles: 1001
+  bootstrap_replicates: 10000
+  gradient_samples_per_group: 1024
+  maximum_samples_per_patient_group: 32
+
+performance:
+  target_peak_gpu_gib: 28
+  selected_parallel_conditions: 4
+  measured_parallel_updates_per_second: 16.9937
+  measured_parallel_mean_gpu_utilization_percent: 84.39
+  measured_development_steady_gpu_utilization_percent: 85.17
+  worker_candidates: [2, 4, 8]
+  prefix_microbatch_candidates: [8, 16, 32, 64]
+  frozen_prefix_precision_candidates: [float32, bfloat16]
+  selected_frozen_prefix_precision: float32
+  bfloat16_prefix_rejected_for_lower_throughput: true
+  fast_weight_precision: float32
+
+outputs:
+  namespace: outputs/reports/tusz_meta_ttt_v2

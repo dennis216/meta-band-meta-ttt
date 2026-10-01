@@ -1,0 +1,81 @@
+protocol:
+  id: tusz_meta_ttt_v1
+  seed: 3407
+  confirmation_seeds: [17, 42, 3407]
+
+data:
+  root: /mnt/d/TUH_EEG/TUSZ_v2.0.6
+  dataset_version: 2.0.6
+  partitions: [train, dev, eval]
+  development_fraction: 0.20
+  channels: 16
+  sampling_hz: 200
+  window_seconds: 10
+  stride_seconds: 2
+  scale_uv: 0.01
+
+preprocessing:
+  bandpass_hz: [0.3, 75.0]
+  bandpass_order: 4
+  notch_hz: 60.0
+  notch_q: 30.0
+  causal: true
+
+model:
+  checkpoint: third_party/CBraMod/pretrained_weights/pretrained_weights.pth
+  detector: [2000, 256, 1]
+  dropout: 0.1
+  adapted_blocks: [10, 11]
+
+supervised:
+  effective_batch_size: 64
+  seizure_background_ratio: [1, 3]
+  backbone_lr: 1.0e-5
+  detector_lr: 1.0e-4
+  weight_decay: 0.01
+  min_epochs: 5
+  max_epochs: 30
+  patience: 5
+  gradient_clip: 1.0
+
+adaptation:
+  mode: online
+  update_seconds: 30
+  inner_optimizer: sgd
+  inner_lrs: [1.0e-6, 1.0e-5, 1.0e-4]
+  inner_steps: 1
+  tbptt_updates: 4
+  reset: record
+  objectives: [band, temporal, mask, learned]
+
+  # Stage-D Meta-training ablation. The trainer supports this variant; it is
+  # kept off for the original baseline and enabled explicitly per run.
+  gradient_alignment:
+    status: implemented
+    smoke_test: passed
+    method: cosine_outer_regularizer
+    lambdas: [0.0, 0.1, 1.0]
+    parameter_scope: adapted_backbone_blocks
+    adapted_blocks: [10, 11]
+    query_labels: meta_training_only
+    deployment_use: false
+    exclude_ssl_head: true
+    near_zero_norm: record_and_skip
+    retain_inner_graph: true
+  pcgrad:
+    status: secondary_ablation_only
+    enabled: false
+
+evaluation:
+  target_sensitivity: 0.80
+  noninferiority_margin: 0.02
+  minimum_fa_reduction: 0.10
+  ema_alpha: 0.3333333333333333
+  onset_consecutive: 2
+  offset_consecutive: 2
+  threshold_quantiles: 1001
+  minimum_overlap_seconds: 1.0
+  bootstrap_replicates: 10000
+
+outputs:
+  namespace: outputs/reports/tusz_meta_ttt_v1
