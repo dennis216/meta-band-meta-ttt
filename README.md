@@ -35,11 +35,12 @@ tools/                          跨机器运行副本与发布检查工具
 
 ```bash
 python -m pip install -e '.[test]'
-python -m pytest tests/tusz_meta_ttt tests/data tests/evaluation tests/preprocessing tests/test_contracts.py -q
-python tools/check_release.py
+python tools/verify.py
 ```
 
 上述测试不需要 EEG 数据或训练 checkpoint。GPU 训练与完整实验复现需要另行准备数据、CBraMod 预训练权重、S1 checkpoint、暖启动 head 和对应清单，详见复现说明。部分旧脚本依赖原机器绝对路径；`tools/prepare_runtime.py` 会生成路径替换后的独立运行副本，不修改发布源码。
+
+`tools/verify.py` 使用当前 Python 环境执行发布检查和 CPU 测试，任一步失败即返回非零退出码，不启动训练。可在克隆后或提交前运行。
 
 ## 实验版本
 

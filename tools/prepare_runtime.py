@@ -7,6 +7,27 @@ from pathlib import Path
 import shutil
 
 
+def runtime_ignore(source: Path):
+    """Ignore generated assets only at root; retain packages named data/cache."""
+    root_only = {'outputs', 'runs', 'logs', 'cache', 'data', 'manifests', 'weights',
+                 'build', 'dist', '.local-runtime'}
+    everywhere = {'.git', '.venv', '__pycache__', '.pytest_cache', '.ruff_cache'}
+
+    def ignore(directory: str, names: list[str]) -> set[str]:
+        current = Path(directory)
+        skipped = {name for name in names if name in everywhere or name.endswith('.egg-info')}
+        if current == source:
+            skipped.update(root_only.intersection(names))
+        # Never dereference local asset links into the shared code copy.
+        skipped.update(name for name in names if (current / name).is_symlink())
+        skipped.update(name for name in names if Path(name).suffix.lower() in
+                       {'.edf', '.pt', '.pth', '.ckpt', '.npy', '.npz', '.parquet', '.pkl', '.pem', '.key'}
+                       or name == '.env' or name.startswith('.env.') and name != '.env.example')
+        return skipped
+
+    return ignore
+
+
 def prepare(source: Path, destination: Path, tusz: str, chb: str, cache: str) -> dict:
     source, destination = source.resolve(), destination.resolve()
     if destination.exists():
@@ -16,9 +37,7 @@ def prepare(source: Path, destination: Path, tusz: str, chb: str, cache: str) ->
     for value in (str(destination), tusz, chb, cache):
         if not value.startswith('/') or any(c in value for c in '\n\r\t\"\'`$\\ '):
             raise ValueError('use absolute Linux paths without spaces or shell metacharacters')
-    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(
-        '.git', '.venv', '__pycache__', '*.egg-info', '.pytest_cache',
-        'outputs', 'runs', 'logs', 'cache', 'data', 'manifests', '.local-runtime'))
+    shutil.copytree(source, destination, ignore=runtime_ignore(source))
     replacements = {
         '/mnt/c/Users/User/Documents/ChatGPT/EEG_ZiquanBaoBao/metaTTT_migration_20260905/project/scripts': str(destination / 'scripts'),
         '/mnt/c/Users/User/Documents/Codex/2026-08-03/du-q/work/NeuroTTT/CBraMod': str(destination / 'external/NeuroTTT_CBraMod'),

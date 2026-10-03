@@ -22,3 +22,22 @@ def test_relocation_preserves_original_and_refuses_overwrite(tmp_path):
     assert str(destination) in (destination / 'scripts/example.py').read_text()
     with pytest.raises(ValueError, match='must not exist'):
         module.prepare(source, destination, '/data/tusz', '/data/chb', '/data/cache')
+
+
+def test_copy_preserves_data_packages_but_excludes_assets_and_symlinks(tmp_path):
+    source = tmp_path / 'source'
+    retained = ['src/bfa/data/__init__.py', 'tests/data/test_scan.py',
+                'third_party/CBraMod/pretrained_weights/README.md', '.env.example']
+    omitted = ['data/private.txt', 'cache/private.txt', 'outputs/result.txt',
+               'third_party/CBraMod/pretrained_weights/model.pth', '.env.production',
+               'src/bfa/data/__pycache__/data.pyc']
+    for name in retained + omitted:
+        path = source / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('# fixture\n')
+    (source / 'linked-data').symlink_to(source / 'data', target_is_directory=True)
+    destination = tmp_path / 'runtime'
+    module.prepare(source, destination, '/data/tusz', '/data/chb', '/data/cache')
+    assert all((destination / name).is_file() for name in retained)
+    assert all(not (destination / name).exists() for name in omitted)
+    assert not (destination / 'linked-data').exists()

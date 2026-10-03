@@ -32,6 +32,8 @@ python -m pip install -e '.[test]'
 
 转换报告写入运行副本的 `runtime-paths.json`。归档目录仅供查阅，不作为运行目录。工具只迁移路径，不创建患者清单、不迁移模型、不改变实验算法。
 
+迁移会保留 `src/bfa/data` 和 `tests/data` 等代码目录，只排除项目根目录的数据/输出目录、生成缓存、模型文件和符号链接。完成迁移后先运行 `python tools/verify.py`；所需 EEG 和权重按下文单独准备。
+
 ## 外部资产
 
 1. CBraMod 预训练权重放在 `third_party/CBraMod/pretrained_weights/pretrained_weights.pth`；CHB 入口使用 `external/NeuroTTT_CBraMod/pretrained_weights/pretrained_weights.pth`。
