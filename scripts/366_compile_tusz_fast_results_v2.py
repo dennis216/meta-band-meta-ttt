@@ -116,12 +116,12 @@ def main():
         statuses[name]=state.get('status')
     completion=dict(status='complete_single_seed' if not missing else 'incomplete',seed=3407,required_artifacts=len(artifacts),missing_artifacts=missing,queue_stage_labels=statuses,formal_eval_conditions=10,formal_gradient_reports=12,extended_formal_gradient_reports=12,development_mechanism_conditions=6,development_gradient_reports=8,other_seeds_deferred=True)
     (REPORT/'completion.json').write_text(json.dumps(completion,indent=2))
-    text=['本轮复用 S1 和已有预处理缓存，seed 3407。未重新训练 S1；不宣称原始 EDF 到报警严格逐样本因果。F 是理想化零计算延迟下的顺序检测，C 是完整当前 chunk 适应后的回顾性检测。','', '正式 Eval 主条件；各条件阈值均在 Dev 独立固定：','', '| 模式 | SSL | 条件 | 敏感度 | FA/hour | FA time min/hour |','|---|---|---|---:|---:|---:|']
+    text=['This round reuses S1 and existing preprocessing caches with seed 3407. S1 was not retrained; strict sample-by-sample causality from raw EDF to alarms is not claimed. F is sequential detection with idealized zero computation delay; C is retrospective detection after adaptation using the entire current chunk.','', 'Main formal Eval conditions; each threshold was independently fixed on Dev:','', '| Mode | SSL | Condition | Sensitivity | FA/hour | FA time min/hour |','|---|---|---|---:|---:|---:|']
     for row in evaluations:
         if row['partition']=='eval' and row['run'].startswith('eds_formal_fast_'):
             ssl='mask' if '_mask_' in row['run'] else 'band'
             if row.get('sensitivity') is not None:text.append(f"| {row['mode']} | {ssl} | {row['condition']} | {100*row['sensitivity']:.2f}% | {row['false_alarms_per_hour']:.4f} | {row['false_alarm_minutes_per_hour']:.4f} |")
-    text+=['','收益归因应以同一 Meta checkpoint 的 Frozen/Adapted 配对比较为准。相对原始 S1 的变化同时包含额外训练收益；继续监督 E/ED 对照见 event_results.csv。三个 seed 的正式确认尚未运行，本次只提供单 seed 证据。','', '主要患者 bootstrap：','', '| 模式 | FA/hour 比值 | 95% CI | 敏感度差值 |','|---|---:|---|---:|']
+    text+=['','Attribute adaptation gains using paired Frozen/Adapted comparisons from the same Meta checkpoint. Changes relative to the original S1 also include additional training gains; continued-supervision E/ED controls are in event_results.csv. Three-seed confirmation has not run; these results provide single-seed evidence only.','', 'Primary patient bootstrap:','', '| Mode | FA/hour ratio | 95% CI | Sensitivity difference |','|---|---:|---|---:|']
     for mode in ['future','current']:
         p=OUT/'statistics/bootstrap'/f'formal_fast_{mode}_mask_eds_seed3407.json'
         if not p.is_file():continue
@@ -129,7 +129,7 @@ def main():
         if 'bootstrap' not in data:continue
         point=data['point_effects_by_seed'][0];interval=data['bootstrap']['fa_per_hour_ratio']['ci95']
         text.append(f"| {mode} | {point['fa_per_hour_ratio']:.5f} | [{interval[0]:.5f}, {interval[1]:.5f}] | {100*point['sensitivity_difference']:.3f} pp |")
-    text+=['','工程验收的逐条证据与未覆盖边界见 VALIDATION_AUDIT.md；机制与吞吐解释见 MECHANISM_REPORT.md。完整梯度统计见 gradient_results.csv 与每份 summary.json；分组样本不足时保留实际数量，没有突破每患者/每事件采样限制。次要比较 Holm 校正见 holm_secondary.json。','',f'单 seed 实验核验：{completion["status"]}；必需产物 {len(artifacts)} 项，缺失 {len(missing)} 项。三个 seed 的正式确认依照本轮单 seed 约束暂缓。']
+    text+=['','See VALIDATION_AUDIT.md for individual engineering checks and uncovered cases; see MECHANISM_REPORT.md for mechanism and throughput analysis. Full gradient statistics are in gradient_results.csv and each summary.json. Groups with insufficient samples retain their actual counts without exceeding patient/event sampling limits. Holm-adjusted secondary comparisons are in holm_secondary.json.','',f'Single-seed experiment audit: {completion["status"]}; {len(artifacts)} required artifacts, {len(missing)} missing. Three-seed confirmation remains deferred under the current single-seed scope.']
     (REPORT/'REPORT.md').write_text('\n'.join(text)+'\n')
     print(json.dumps(dict(report=str(REPORT),evaluation_rows=len(evaluations),gradient_rows=len(gradients),bootstrap_rows=len(bootstrap),status=completion['status'],missing=len(missing))))
     if missing:raise FileNotFoundError(f'{len(missing)} required artifacts are missing; see completion.json')

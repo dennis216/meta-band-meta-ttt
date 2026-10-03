@@ -2,60 +2,60 @@
 
 Research code for seizure detection and self-supervised test-time adaptation on **CHB-MIT** and **TUSZ**, using CBraMod representations.
 
-本仓库整理 Meta-Band / Meta-TTT 研究线的训练、评价、机制分析和性能测试代码。保留 CHB-MIT 历史实现以及 TUSZ v1–v4，不包含 Router / idea3 研究代码。各版本是独立实验条件，不能混合其数据划分、checkpoint、阈值或时间语义。
+This repository contains training, evaluation, mechanism analysis, and performance benchmarks for Meta-Band / Meta-TTT. It preserves the historical CHB-MIT implementation and TUSZ v1–v4. Router and idea3 experiments are outside its scope. Each version defines separate experimental conditions: do not mix data splits, checkpoints, thresholds, or temporal protocols across versions.
 
-## 从哪里开始
+## Getting started
 
-| 内容 | 位置 |
+| Resource | Location |
 |---|---|
-| 安装、数据与运行步骤 | [docs/REPRODUCING.md](docs/REPRODUCING.md) |
-| 全部入口导航 | [docs/SCRIPT_INDEX.md](docs/SCRIPT_INDEX.md) |
-| 发布检查与已知边界 | [docs/VALIDATION.md](docs/VALIDATION.md) |
-| 源码来源与原始 SHA-256 | [docs/source-manifest.json](docs/source-manifest.json) |
-| 第三方授权说明 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
+| Installation, assets, and execution | [docs/REPRODUCING.md](docs/REPRODUCING.md) |
+| Complete script index | [docs/SCRIPT_INDEX.md](docs/SCRIPT_INDEX.md) |
+| Release validation and limitations | [docs/VALIDATION.md](docs/VALIDATION.md) |
+| Source provenance and original SHA-256 hashes | [docs/source-manifest.json](docs/source-manifest.json) |
+| Third-party licenses | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
 
 ```text
-src/bfa/                         公共数据、预处理、模型、评分与训练模块
-src/bfa/tusz_meta_ttt/            TUSZ v1 及共享组件
-src/bfa/tusz_meta_ttt_v2/         联合 Meta、F/C 模式、批处理与并行优化
-src/bfa/tusz_meta_ttt_v3/         对齐与损害约束
-src/bfa/tusz_meta_ttt_v4/         配对收益、Frozen 保持与路径分解
-scripts/                        保留编号的训练、评价、统计与 benchmark 入口
-external/NeuroTTT_CBraMod/       CHB-MIT GroupKFold / Meta-Band 实现
-third_party/CBraMod/             TUSZ 使用的 CBraMod 模型依赖
-archive/chb-20260905/            与当前入口有差异的 CHB 冻结脚本
-configs/ + protocols/           已有配置与协议
-tests/                          单元、数值与状态语义检验
-tools/                          跨机器运行副本与发布检查工具
+src/bfa/                         Shared data, preprocessing, models, scoring, and training
+src/bfa/tusz_meta_ttt/            TUSZ v1 and shared components
+src/bfa/tusz_meta_ttt_v2/         Joint Meta, F/C modes, batching, and parallel execution
+src/bfa/tusz_meta_ttt_v3/         Alignment and damage constraints
+src/bfa/tusz_meta_ttt_v4/         Paired gain, Frozen preservation, and gradient decomposition
+scripts/                        Numbered training, evaluation, analysis, and benchmark entry points
+external/NeuroTTT_CBraMod/       CHB-MIT GroupKFold / Meta-Band implementation
+third_party/CBraMod/             CBraMod model dependency used by TUSZ
+archive/chb-20260905/            Frozen CHB scripts that differ from the current versions
+configs/ + protocols/           Existing configurations and protocols
+tests/                          Unit, numerical, and state-semantics tests
+tools/                          Runtime relocation and release verification
 ```
 
-## 快速检查
+## Quick verification
 
-推荐 Linux / WSL2、Python 3.11。先安装适合显卡驱动的 PyTorch，再执行：
+Use Linux / WSL2 and Python 3.11. Install a PyTorch build compatible with your GPU driver, then run:
 
 ```bash
 python -m pip install -e '.[test]'
 python tools/verify.py
 ```
 
-上述测试不需要 EEG 数据或训练 checkpoint。GPU 训练与完整实验复现需要另行准备数据、CBraMod 预训练权重、S1 checkpoint、暖启动 head 和对应清单，详见复现说明。部分旧脚本依赖原机器绝对路径；`tools/prepare_runtime.py` 会生成路径替换后的独立运行副本，不修改发布源码。
+These tests require neither EEG data nor trained checkpoints. GPU training and full reproduction require datasets, CBraMod pretrained weights, S1 checkpoints, warm-start heads, and matching manifests; see the reproduction guide. Some historical scripts retain machine-specific absolute paths. `tools/prepare_runtime.py` creates a separate relocated runtime copy without changing the published source.
 
-`tools/verify.py` 使用当前 Python 环境执行发布检查和 CPU 测试，任一步失败即返回非零退出码，不启动训练。可在克隆后或提交前运行。
+`tools/verify.py` runs release checks and CPU tests in the current Python environment. It returns a nonzero exit code on failure and does not start training. Run it after cloning or before committing.
 
-## 实验版本
+## Experiment versions
 
-| 版本 | 主要内容 |
+| Version | Main content |
 |---|---|
-| CHB-MIT | GroupKFold、Band 辅助任务、窗口/记录/患者级历史适应实验 |
-| TUSZ v1 | 数据审计、监督 S0/S1、SSL、早期 Meta 和事件评价 |
-| TUSZ v2 | Encoder / detector / SSL head outer 范围；F 与 C 分开训练；吞吐优化 |
-| TUSZ v3 | Band / Mask 的 Post-BCE、alignment、damage 消融 |
-| TUSZ v4 | 修正事件评分；同 query pre/post 配对收益；保护 Frozen 能力 |
+| CHB-MIT | GroupKFold, Band auxiliary task, historical window/record/patient adaptation experiments |
+| TUSZ v1 | Data audit, supervised S0/S1, SSL, early Meta, and event evaluation |
+| TUSZ v2 | Encoder / detector / SSL-head outer scopes; separately trained F/C modes; throughput optimization |
+| TUSZ v3 | Band / Mask Post-BCE, alignment, and damage ablations |
+| TUSZ v4 | Corrected event scoring; paired pre/post gain on the same query; Frozen preservation |
 
-F 表示当前 chunk 更新服务未来 chunk；C 表示获得整个当前 chunk 后适应并回顾性预测。C 不能按 F 的在线时间语义解读。v2 及后续复用信号缓存，不据此声称原始 EDF 到报警的逐样本严格因果性。
+In F mode, updates from the current chunk serve future chunks. In C mode, adaptation uses the entire current chunk before retrospectively predicting that chunk. C does not have F's online timing semantics. Versions v2 onward reuse signal caches and do not establish strict sample-by-sample causality from raw EDF to alarms.
 
-这是代码发布，不包含患者级结果或新的疗效/性能结论。历史协议描述的是实验设计，不代表每项实验均已完成或通过。整理过程没有启动训练，也没有改写原研究目录。
+This is a code release; it includes no patient-level results or new clinical/performance claims. Historical protocols describe experimental designs, not evidence that every experiment has completed or passed. Packaging did not start training or modify the original research checkout.
 
-## 数据与权重
+## Data, weights, and licensing
 
-不上传原始 EEG、患者清单、缓存、模型权重、逐窗口概率、日志或邮件。TUSZ 需按数据提供方要求自行获得访问权。CBraMod 第三方许可证随源码保留；本项目原创代码尚未另行指定开源许可证，公开可读不等同于额外授予商业或再许可权利。
+Raw EEG, patient manifests, caches, model weights, per-window probabilities, logs, and emails are not distributed. Obtain TUSZ access under the provider's requirements. CBraMod license notices are retained. No additional open-source license has been selected for the original research code; public readability does not grant additional commercial or sublicensing rights.

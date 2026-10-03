@@ -15,7 +15,7 @@ import json
 import time
 from datetime import datetime
 
-# 引入所需的数据集加载模块和模型模块
+# Import the required dataset loaders and model modules.
 from datasets import speech_dataset
 from models import model_for_speech
 from datasets import faced_dataset, seedv_dataset, physio_dataset, shu_dataset, isruc_dataset, chb_dataset, \
@@ -79,10 +79,10 @@ def main():
     setup_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    exp_dir = Path(args.results_dir)          # 比如 './experiments'
-    exp_dir.mkdir(parents=True, exist_ok=True)   # 确保目录存在
+    exp_dir = Path(args.results_dir)          # For example, './experiments'.
+    exp_dir.mkdir(parents=True, exist_ok=True)   # Ensure the directory exists.
 
-    # 如果下游数据集是BCIC2020-3，设置正确的类别数（5 类）
+    # Set the correct class count (5) for BCIC2020-3.
     if args.downstream_dataset == 'BCIC2020-3':
         args.num_of_classes = 5
         load_dataset = speech_dataset.LoadDataset(args)
@@ -96,22 +96,22 @@ def main():
         load_dataset = bciciv2a_dataset.LoadDataset(args)
         model = model_for_bciciv2a.Model(args)
 
-    # 固定CUDA设备
+    # Fix the CUDA device.
     if device == "cuda":
         torch.cuda.set_device(args.cuda)
         torch.cuda.set_device(args.cuda)
 
-    # 获取目标域的无标签训练集和有标签测试集
+    # Get unlabeled target-domain training data and labeled test data.
     data_loaders = load_dataset.get_data_loader()
         
     
-    # 不加载预训练基础权重（直接用finetuned权重）
+    # Load fine-tuned weights directly, without loading base pretrained weights.
     model = model.cuda()
     #args.use_pretrained_weights = False
-    # 加载微调后的模型参数
+    # Load fine-tuned model parameters.
     if args.model_path != "None":
         model.load_state_dict(torch.load(args.model_path, map_location=f'cuda:{args.cuda}'))
-    model.eval()  # 模型设为eval模式以禁用Dropout等
+    model.eval()  # Disable dropout and other training-only behavior.
     print("Loaded model weights from", args.model_path)
 
     layers = list(model.children())
@@ -128,12 +128,12 @@ def main():
         raise ValueError("Model structure does not match expectation, cannot split into feature extractor and classifier")
             
 
-    # 【SHOT关键】冻结分类器参数
+    # SHOT requirement: freeze classifier parameters.
     for param in classifier.parameters():
         param.requires_grad = False
     classifier.eval()
         
-    # 只优化特征提取器
+    # Optimize only the feature extractor.
     optimizer = SGD(
         [p for p in feature_extractor.parameters() if p.requires_grad],
         lr=args.lr,
@@ -151,9 +151,9 @@ def main():
     print("Start SHOT target domain adaptation training")
     print("="*60)
         
-    # 设定模型为训练模式
+    # Set the model to training mode.
     feature_extractor.train()
-    # 冻结分类器参数
+    # Freeze classifier parameters.
     classifier.eval()
     
     best_acc = 0.0
@@ -170,16 +170,16 @@ def main():
             #'conf_coverages': []
         }
 
-        # 1) 预计算全局质心：一次/每轮
+        # 1) Precompute global centroids once per epoch.
         feature_extractor.eval()
         classifier.eval()
 
-        # 整域/整轮 Self-supervised PL 
+        # Self-supervised pseudo-labeling across the entire domain/epoch.
         with torch.no_grad():
-             # 动态确定特征维度
+             # Determine feature dimensionality dynamically.
             first_batch = next(iter(data_loaders['train']))
             if isinstance(first_batch, (list, tuple)):
-                first_batch = first_batch[0].to(device)  # 只取数据部分
+                first_batch = first_batch[0].to(device)  # Use only the data component.
             else:
                 first_batch = first_batch.to(device)
             f0 = feature_extractor(first_batch)
@@ -190,18 +190,18 @@ def main():
 
             for batch in data_loaders['train']:
                 if isinstance(batch, (list, tuple)):
-                    x = batch[0].to(device)  # 只取数据，忽略标签
+                    x = batch[0].to(device)  # Use data only; ignore labels.
                 else:
                     x = batch.to(device)
                 f = feature_extractor(x)
                 feat_vec = f.flatten(1)
                 logits = classifier(f)
                 
-                # 处理二分类情况：如果输出是1维的，转换为2维概率
+                # Convert one-dimensional binary outputs into two-class probabilities.
                 if logits.dim() == 1:
-                    # 对于二分类，logits是单个值，应用sigmoid后转为2类概率
-                    probs_pos = torch.sigmoid(logits)  # 正类概率
-                    probs_neg = 1 - probs_pos  # 负类概率
+                    # Apply sigmoid to a scalar binary logit, then form two-class probabilities.
+                    probs_pos = torch.sigmoid(logits)  # Positive-class probability.
+                    probs_neg = 1 - probs_pos  # Negative-class probability.
                     p = torch.stack([probs_neg, probs_pos], dim=1)  # [N, 2]
                 else:
                     p = F.softmax(logits, dim=1)
@@ -213,18 +213,18 @@ def main():
 
             centroids = sum_feat / (sum_w + 1e-6)        # Eq.(4)
 
-            # 2) 最近质心 -> 伪标签（硬）
+            # 2) Nearest centroid -> hard pseudo-labels
             all_feats  = []
             all_yhat   = []
             for batch in data_loaders['train']:
                 if isinstance(batch, (list, tuple)):
-                    x = batch[0].to(device)  # 只取数据，忽略标签
+                    x = batch[0].to(device)  # Use data only; ignore labels.
                 else:
                     x = batch.to(device)
                 f = feature_extractor(x)
                 feat_vec = f.flatten(1)                        # [N, D]
 
-                # 用余弦相似度做最近质心分配
+                # Assign the nearest centroid using cosine similarity.
                 cos = F.normalize(feat_vec, dim=1) @ F.normalize(centroids, dim=1).T  # [N, K]
                 y_hat = cos.argmax(1)                          # [N]
 
@@ -234,21 +234,21 @@ def main():
             feats = torch.cat(all_feats, dim=0)                # [M, D]
             yhat  = torch.cat(all_yhat, dim=0)                 # [M]
 
-            # 3) 按硬伪标签再均值更新一次质心（Eq.(6)）
+            # 3) Recompute mean centroids using hard pseudo-labels (Eq. (6)).
             K = args.num_of_classes
             new_sum_feat = torch.zeros(K, D, device=device)
-            # 对每一类把对应样本特征相加（index_add_ 向量化）
+            # Sum feature vectors for each class using vectorized index_add_.
             new_sum_feat.index_add_(0, yhat, feats)
 
-            # 统计每类样本数（用于除法）
+            # Count samples per class for normalization.
             counts = torch.zeros(K, device=device).scatter_add_(0, yhat, torch.ones(yhat.size(0), device=device))
             counts = counts.clamp_min(1e-6).unsqueeze(1)       # [K,1]
 
             new_centroids = new_sum_feat / counts              # [K, D]
 
-            # 4) 用新质心覆盖旧质心
+            # 4) Replace old centroids with the new centroids.
             centroids = new_centroids
-            # 可选：用 y_hat 再均值更新一次 centroids，然后再跑一次最近质心分配
+            # Optionally recompute centroids from y_hat and repeat nearest-centroid assignment.
 
         feature_extractor.train()
             
@@ -256,36 +256,36 @@ def main():
         
             optimizer.zero_grad()
 
-            # 正确处理数据：只取数据部分，忽略标签
+            # Use only data and ignore labels.
             if isinstance(batch, (list, tuple)):
-                inputs = batch[0].to(device)  # 只取数据，忽略batch[1]（标签）
+                inputs = batch[0].to(device)  # Use data only; ignore batch[1] (labels).
             else:
                 inputs = batch.to(device)
-            # 提取特征
+            # Extract features.
             features = feature_extractor(inputs)
             
-            # 分类预测
+            # Classification predictions
             logits = classifier(features)
             
-            # 处理二分类情况：如果输出是1维的，转换为2维概率
+            # Convert one-dimensional binary outputs into two-class probabilities.
             if logits.dim() == 1:
-                # 对于二分类，logits是单个值，应用sigmoid后转为2类概率
-                probs_pos = torch.sigmoid(logits)  # 正类概率
-                probs_neg = 1 - probs_pos  # 负类概率
+                # Apply sigmoid to a scalar binary logit, then form two-class probabilities.
+                probs_pos = torch.sigmoid(logits)  # Positive-class probability.
+                probs_neg = 1 - probs_pos  # Negative-class probability.
                 probabilities = torch.stack([probs_neg, probs_pos], dim=1)  # [N, 2]
-                # 为了计算损失，我们需要将logits也转为2维
+                # Convert logits to two dimensions for loss computation.
                 logits_2d = torch.stack([-logits, logits], dim=1)  # [N, 2]
                 logits = logits_2d
             else:
                 probabilities = F.softmax(logits, dim=1)
             
-            # 计算互信息损失
+            # Compute the mutual-information loss.
             cond_entropy = conditional_entropy(probabilities)
             marg_entropy = marginal_entropy(probabilities)
             mi_loss = cond_entropy - args.mi_lambda * marg_entropy
             
-            # 计算伪标签损失
-            # 生成伪标签
+            # Compute the pseudo-label loss.
+            # Generate pseudo-labels.
             # naive pseudo-labeling table 6
             # with torch.no_grad():
             #     p = F.softmax(logits.detach(), dim=1)
@@ -303,35 +303,35 @@ def main():
             #     pl_loss = torch.tensor(0.0, device=device)
             
    
-            # 用固定centroids 生成当批伪标签
+            # Generate batch pseudo-labels using fixed centroids.
             with torch.no_grad():
                 feat_vec = features.flatten(1)
                 cos = F.normalize(feat_vec, dim=1) @ F.normalize(centroids, dim=1).T
                 pseudo_labels = cos.argmax(1)
 
-                # （可选）相似度覆盖率：最大相似度 ≥ 阈值的比例
-                # 例如阈值 0.6，可根据数据分布调整
+                # Optional similarity coverage: fraction with maximum similarity >= threshold.
+                # Example threshold: 0.6; adjust based on the data distribution.
                 # max_sim, _ = cos.max(dim=1)
                 # cov = (max_sim >= getattr(args, 'centroid_sim_threshold', 0.6)).float().mean().item() * 100
 
-            # 5. 计算伪标签损失
+            # 5. Compute the pseudo-label loss.
             pl_loss = F.cross_entropy(logits, pseudo_labels)
 
-            # 总损失
+            # Total loss
             total_loss = mi_loss + args.pl_weight * pl_loss 
             #+ args.pretext_weight_channel * loss
             
-            # 反向传播
+            # Backpropagation
             total_loss.backward()
             optimizer.step()
             
-            # 记录统计信息
+            # Record statistics.
             epoch_stats['losses'].append(total_loss.item())
             epoch_stats['mi_losses'].append(mi_loss.item())
             epoch_stats['pl_losses'].append(pl_loss.item())
             #epoch_stats['conf_coverages'].append(conf_mask.float().mean().item() * 100)
             
-            # 打印训练日志
+            # Print training logs.
             if (batch_idx + 1) % args.log_interval == 0:
                 #conf_cov = conf_mask.float().mean().item() * 100
                 print(f"Epoch [{epoch}/{args.epochs}] "
@@ -341,7 +341,7 @@ def main():
                         f"PL: {pl_loss.item():.4f} ")
                         #f"ConfCov: {conf_cov:.1f}%")
         
-        # 每个epoch结束后的统计
+        # End-of-epoch statistics
         epoch_time = time.time() - epoch_start_time
         avg_loss = np.mean(epoch_stats['losses'])
         #avg_conf_cov = np.mean(epoch_stats['conf_coverages'])
@@ -352,17 +352,17 @@ def main():
             f"Time Elapsed: {epoch_time:.1f}s"
         )
         
-        # 定期评估
+        # Evaluate periodically.
         if epoch % args.eval_interval == 0:
             metrics = evaluate_model(feature_extractor, classifier, data_loaders['test'], device)
             accuracy = metrics['accuracy']
             print(f"Epoch {epoch} test results: {metrics}")
 
-            # 恢复训练模式
+            # Restore training mode.
             feature_extractor.train()
-            # classifier 若冻结且含 BN/Dropout，建议继续保持 eval()；否则这里自行决定
+            # Keep a frozen classifier with BN/Dropout in eval(); otherwise choose as appropriate.
 
-            # 保存最佳模型
+            # Save the best model.
             if accuracy > best_acc:
                 best_acc = accuracy
                 best_model_state = {
@@ -374,18 +374,18 @@ def main():
                 }
                 save_path = exp_dir / 'best_model.pth'
                 torch.save(best_model_state, save_path)
-                print(f"保存最佳模型 (准确率: {best_acc:.4f})")
+                print(f"Saved best model (accuracy: {best_acc:.4f})")
 
         #  train_stats.append(epoch_stats)
 
-    # 保存训练统计
+    # Save training statistics.
     # output_path = exp_dir / 'train_stats.json' 
     # with open(output_path, 'w') as f:
     #     json.dump(train_stats, f, indent=2)
     
 
 
-    # 加载最佳模型进行最终评估
+    # Load the best model for final evaluation.
     if best_model_state is not None:
         feature_extractor.load_state_dict(best_model_state['feature_extractor'])
         classifier.load_state_dict(best_model_state['classifier'])
@@ -394,7 +394,7 @@ def main():
     final_accuracy = final_metrics['accuracy']
 
     
-    # 保存结果
+    # Save results.
     results = {
             'experiment_info': {
                 'name': 'SHOT-Experiment',
@@ -450,14 +450,14 @@ def setup_seed(seed):
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
 
-# 计算条件熵 H(Y|X)
+# Compute conditional entropy H(Y|X).
 def conditional_entropy(p_softmax):
     """Compute conditional entropy H(Y|X)"""
     eps = 1e-8
     ent = -torch.sum(p_softmax * torch.log(p_softmax + eps), dim=1)
     return ent.mean()
 
-# 计算边际熵 H(Y)
+# Compute marginal entropy H(Y).
 def marginal_entropy(p_softmax):
     """Compute marginal entropy H(Y)"""
     eps = 1e-8
@@ -465,7 +465,7 @@ def marginal_entropy(p_softmax):
     ent = -torch.sum(p_mean * torch.log(p_mean + eps))
     return ent
 
-# 温度锐化函数
+# Temperature sharpening
 def sharpen(p_softmax, temperature=0.5):
     """Temperature sharpening"""
     p = p_softmax ** (1.0 / temperature)
@@ -497,10 +497,10 @@ def evaluate_model(feature_extractor, classifier, data_loader, device):
             features = feature_extractor(inputs)
             logits   = classifier(features)
             
-            # 处理二分类输出（logits是1维的）
+            # Handle binary outputs with one-dimensional logits.
             if logits.dim() == 1:
-                # 对于二分类，将1维logits转换为2维概率
-                probs_class1 = torch.sigmoid(logits)  # 使用sigmoid而不是softmax
+                # Convert one-dimensional binary logits into two-class probabilities.
+                probs_class1 = torch.sigmoid(logits)  # Use sigmoid instead of softmax.
                 probs_class0 = 1 - probs_class1
                 probs = torch.stack([probs_class0, probs_class1], dim=1)  # [batch_size, 2]
             else:
@@ -514,7 +514,7 @@ def evaluate_model(feature_extractor, classifier, data_loader, device):
             if logits.dim() == 1:
                 all_scores.extend(probs_class1.detach().cpu().numpy())
 
-    # 计算指标
+    # Compute metrics.
     all_predictions = np.array(all_predictions)
     all_labels = np.array(all_labels)
     all_confidences = np.array(all_confidences)

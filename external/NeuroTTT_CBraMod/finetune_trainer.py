@@ -9,75 +9,75 @@ import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss, MSELoss
 import torch.nn.functional as F
-from torch.cuda.amp import GradScaler, autocast  # 引入混合精度工具
+from torch.cuda.amp import GradScaler, autocast  # Mixed-precision utilities.
 from tqdm import tqdm
 
 from finetune_evaluator import Evaluator
 
 class LoRALayer(nn.Module):
-    """LoRA适配层，可以附加到任何线性层"""
+    """LoRA adapter that can be attached to any linear layer."""
     def __init__(self, in_features: int, out_features: int, r: int = 4, alpha: float = 1.0, dropout: float = 0.0):
         super().__init__()
         self.r = r
         self.alpha = alpha
         self.scaling = alpha / r
         
-        # LoRA参数
+        # LoRA parameters
         self.lora_A = nn.Parameter(torch.randn(in_features, r) * 0.01)
         self.lora_B = nn.Parameter(torch.zeros(r, out_features))
         
-        # 添加dropout
+        # Add dropout.
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, x):
-        """返回LoRA的输出: x @ A @ B * scaling，并应用dropout"""
+        """Return x @ A @ B * scaling with dropout applied."""
         lora_output = self.dropout(x @ self.lora_A) @ self.lora_B
         return lora_output * self.scaling
     
 def add_lora_to_multihead_attention(attention_module, r=4, alpha=1.0, dropout=0.0):
     """
-    给现有的MultiheadAttention模块添加LoRA适配，不改变原有结构
+    Add LoRA to an existing MultiheadAttention module without changing its structure.
     
     Args:
-        attention_module: 原有的nn.MultiheadAttention实例
+        attention_module: Existing nn.MultiheadAttention instance.
         r: LoRA rank
         alpha: LoRA scaling factor
         dropout: LoRA dropout rate
     """
     embed_dim = attention_module.embed_dim
     
-    # 获取原始模块的设备和数据类型
+    # Get the original module's device and dtype.
     device = next(attention_module.parameters()).device
     dtype = next(attention_module.parameters()).dtype
     
-    # 冻结原始参数
+    # Freeze original parameters.
     for param in attention_module.parameters():
         param.requires_grad = False
     
-    # 为q、k、v和out_proj添加LoRA层，并移到正确设备
+    # Add LoRA to q, k, v, and out_proj on the correct device.
     attention_module.lora_q = LoRALayer(embed_dim, embed_dim, r=r, alpha=alpha, dropout=dropout).to(device=device, dtype=dtype)
     attention_module.lora_k = LoRALayer(embed_dim, embed_dim, r=r, alpha=alpha, dropout=dropout).to(device=device, dtype=dtype)
     attention_module.lora_v = LoRALayer(embed_dim, embed_dim, r=r, alpha=alpha, dropout=dropout).to(device=device, dtype=dtype)
     attention_module.lora_out_proj = LoRALayer(embed_dim, embed_dim, r=r, alpha=alpha, dropout=dropout).to(device=device, dtype=dtype)
     
-    # 保存原始的forward方法
+    # Save the original forward method.
     attention_module._original_forward = attention_module.forward
     
-    # 替换forward方法
+    # Replace the forward method.
     def lora_forward(query, key, value, key_padding_mask=None, need_weights=True, 
                     attn_mask=None, average_attn_weights=True, is_causal=False):
         
-        # 检查输入格式
+        # Check input format.
         is_batched = query.dim() == 3
         if not is_batched:
             query = query.unsqueeze(1)
             key = key.unsqueeze(1)
             value = value.unsqueeze(1)
         
-        # 获取原始的qkv投影结果
-        # 手动进行in_proj操作以便添加LoRA
+        # Compute the original QKV projections.
+        # Apply in_proj manually to incorporate LoRA.
         if attention_module.in_proj_weight is not None:
-            # 使用in_proj_weight的情况
+            # Case with a shared in_proj_weight.
             w_q, w_k, w_v = attention_module.in_proj_weight.chunk(3, dim=0)
             
             if attention_module.in_proj_bias is not None:
@@ -85,17 +85,17 @@ def add_lora_to_multihead_attention(attention_module, r=4, alpha=1.0, dropout=0.
             else:
                 b_q = b_k = b_v = None
             
-            # 原始投影
+            # Original projection
             q = F.linear(query, w_q, b_q)
             k = F.linear(key, w_k, b_k)  
             v = F.linear(value, w_v, b_v)
             
-            # 添加LoRA适配
+            # Add the LoRA adaptation.
             q = q + attention_module.lora_q(query)
             k = k + attention_module.lora_k(key)
             v = v + attention_module.lora_v(value)
         else:
-            # 使用独立qkv权重的情况（较少见）
+            # Less common case with separate q, k, and v weights.
             q = F.linear(query, attention_module.q_proj_weight, attention_module.in_proj_bias)
             k = F.linear(key, attention_module.k_proj_weight, None)
             v = F.linear(value, attention_module.v_proj_weight, None)
@@ -104,7 +104,7 @@ def add_lora_to_multihead_attention(attention_module, r=4, alpha=1.0, dropout=0.
             k = k + attention_module.lora_k(key)
             v = v + attention_module.lora_v(value)
         
-        # 执行注意力计算
+        # Compute attention.
         tgt_len, bsz, embed_dim = q.shape
         src_len = k.shape[0]
         
@@ -136,7 +136,7 @@ def add_lora_to_multihead_attention(attention_module, r=4, alpha=1.0, dropout=0.
         attn_output = torch.bmm(attn_output_weights, v)
         attn_output = attn_output.transpose(0, 1).contiguous().view(tgt_len, bsz, embed_dim)
         
-        # 输出投影+LoRA
+        # Output projection + LoRA
         attn_output = F.linear(attn_output, attention_module.out_proj.weight, attention_module.out_proj.bias)
         attn_output = attn_output + attention_module.lora_out_proj(attn_output)
 
@@ -156,30 +156,30 @@ def add_lora_to_multihead_attention(attention_module, r=4, alpha=1.0, dropout=0.
         else:
             return attn_output, None
     
-    # 绑定新的forward方法
+    # Bind the new forward method.
     attention_module.forward = lora_forward
     
     return attention_module
 def add_lora_to_linear(linear_module, r=4, alpha=1.0, dropout=0.0):
-    """给普通的Linear层添加LoRA"""
+    """Add LoRA to a standard Linear layer."""
     in_features = linear_module.in_features
     out_features = linear_module.out_features
     
-    # 获取原始模块的设备和数据类型
+    # Get the original module's device and dtype.
     device = next(linear_module.parameters()).device
     dtype = next(linear_module.parameters()).dtype
     
-    # 冻结原始参数
+    # Freeze original parameters.
     for param in linear_module.parameters():
         param.requires_grad = False
     
-    # 添加LoRA层
+    # Add a LoRA layer.
     linear_module.lora_layer = LoRALayer(in_features, out_features, r=r, alpha=alpha, dropout=dropout).to(device=device, dtype=dtype)
     
-    # 保存原始forward
+    # Save the original forward method.
     linear_module._original_forward = linear_module.forward
     
-    # 替换forward方法
+    # Replace the forward method.
     def lora_forward(x):
         original_output = linear_module._original_forward(x)
         lora_output = linear_module.lora_layer(x)
@@ -190,10 +190,10 @@ def add_lora_to_linear(linear_module, r=4, alpha=1.0, dropout=0.0):
 
 def apply_lora_to_model(model, r=4, alpha=1.0, dropout=0.0):
     """
-    递归地给模型中所有的MultiheadAttention添加LoRA
-    只针对QKV投影
+    Recursively add LoRA to all MultiheadAttention modules in the model.
+    Target only QKV projections.
     """
-    # 确保模型在正确设备上
+    # Ensure the model is on the correct device.
     device = next(model.parameters()).device if len(list(model.parameters())) > 0 else torch.device('cpu')
     
     for name, module in model.named_children():
@@ -201,14 +201,14 @@ def apply_lora_to_model(model, r=4, alpha=1.0, dropout=0.0):
             add_lora_to_multihead_attention(module, r=r, alpha=alpha, dropout=dropout)
             # print(f"Added LoRA to MultiheadAttention: {name}")
         else:
-            # 递归处理子模块
+            # Process child modules recursively.
             apply_lora_to_model(module, r=r, alpha=alpha, dropout=dropout)
     
     return model
 
 
 def get_lora_parameters(model):
-    """获取所有LoRA参数"""
+    """Collect all LoRA parameters."""
     lora_params = []
     for module in model.modules():
         if isinstance(module, nn.MultiheadAttention):
@@ -219,9 +219,9 @@ def get_lora_parameters(model):
     return lora_params
 
 def freeze_non_lora_parameters(model):
-    """冻结所有非LoRA参数"""
+    """Freeze all non-LoRA parameters."""
     for name, param in model.named_parameters():
-        # 只保留LoRA(qkv)和out_proj权重为可训练
+        # Keep only LoRA QKV and out_proj weights trainable.
         if 'lora_' in name:
             param.requires_grad = True
         if 'backbone' in name:
@@ -252,18 +252,18 @@ class Trainer(object):
         self.best_model_states = None
 
         if self.params.use_lora:
-            # 应用LoRA
+            # Apply LoRA.
             self.model = apply_lora_to_model(self.model, r=self.params.lora_r, alpha=self.params.lora_alpha, dropout=self.params.lora_dropout)
             freeze_non_lora_parameters(self.model)
 
-        # 显示可训练参数统计
+        # Display trainable-parameter statistics.
         trainable = [p for p in self.model.parameters() if p.requires_grad]
         total = sum(p.numel() for p in self.model.parameters())
         trainable_count = sum(p.numel() for p in trainable)
         print(f"trainable: {trainable_count:,} / {total:,}")
         
 
-        # 打印所有可训练参数的详细信息
+        # Print details of all trainable parameters.
         # print("\n=== Trainable Parameters ===")
         # for name, param in self.model.named_parameters():
         #     if param.requires_grad:
@@ -271,7 +271,7 @@ class Trainer(object):
         # print("=" * 30)
 
 
-        # 如果使用LoRA，优化器只训练可训练参数
+        # In LoRA mode, optimize only trainable parameters.
         if self.params.use_lora:
             trainable_params = [p for p in self.model.parameters() if p.requires_grad]
         else:
@@ -279,7 +279,7 @@ class Trainer(object):
 
         if self.params.optimizer == 'AdamW':
             if self.params.multi_lr and not self.params.use_lora: 
-                # 多学习率只在非LoRA模式下使用
+                # Multiple learning rates are used only outside LoRA mode.
                 backbone_params = [p for name, p in self.model.named_parameters() if "backbone" in name]
                 other_params = [p for name, p in self.model.named_parameters() if "backbone" not in name]
                 self.optimizer = torch.optim.AdamW([
@@ -349,28 +349,28 @@ class Trainer(object):
                         # (batch, channels, total_time)
                         b, ch, seg, pts = x.shape  # seg=3, pts=200, ch=64
                         x_flat = x.view(b, ch, seg*pts)  # (b, 64, 600)
-                        # 为每个样本生成带通滤波并计算Band损失
+                        # Generate band-filtered views for each sample and compute the Band loss.
                         filtered_x = torch.zeros_like(x_flat)
                         band_labels = []
-                        sfreq_tensor = torch.tensor([200], device=x.device)  # 采样率（200Hz）
+                        sfreq_tensor = torch.tensor([200], device=x.device)  # Sampling rate: 200 Hz.
                         for i in range(b):
-                            # 随机去除一个频带
+                            # Randomly remove one frequency band.
                             fx_i, band_idx = self.model.band.reject_band(x_flat[i].unsqueeze(0), sfreq_tensor)
                             filtered_x[i] = fx_i
                             band_labels.append(band_idx)
                         band_labels = torch.tensor(band_labels, device=x.device).long()
-                        # 经backbone提取特征后计算Band任务预测
+                        # Extract backbone features and compute Band predictions.
                         feats = self.model.backbone(filtered_x.view(b, ch, seg, pts))
-                        band_feats = feats.mean(dim=1)               # 在通道维度上平均 (b, 3, 200)
+                        band_feats = feats.mean(dim=1)               # Average over channels: (b, 3, 200).
                         band_feats_flat = band_feats.view(b, -1)     # (b, 600)
-                        band_logits = self.model.band.classifier(band_feats_flat)  # (b, 7) 7个频带类别
+                        band_logits = self.model.band.classifier(band_feats_flat)  # (b, 7): seven frequency-band classes.
                         loss_band = F.cross_entropy(band_logits, band_labels)
                         loss = loss_class + self.params.pretext_weight_band * loss_band
                 elif self.params.pretext == 'amp':
-                    # 将输入展开为 (batch, channels, total_time)
+                    # Flatten inputs to (batch, channels, total_time).
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
-                    # 为每个样本应用随机幅度缩放并计算 Amp 任务损失
+                    # Apply random amplitude scaling to each sample and compute the Amp loss.
                     scaled_x = torch.zeros_like(x_flat)
                     amp_labels = []
                     for i in range(b):
@@ -385,10 +385,10 @@ class Trainer(object):
                     loss_amp = F.cross_entropy(amp_logits, amp_labels)
                     loss = loss_class + self.params.pretext_weight_amp * loss_amp
                 elif self.params.pretext == 'phase':
-                    # 将输入展开为 (batch, channels, total_time)
+                    # Flatten inputs to (batch, channels, total_time).
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
-                    # 为每个样本应用随机相位偏移并计算 Phase 任务损失
+                    # Apply a random phase shift to each sample and compute the Phase loss.
                     shifted_x = torch.zeros_like(x_flat)
                     phase_labels = []
                     for i in range(b):
@@ -406,7 +406,7 @@ class Trainer(object):
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
 
-                    # 生成重排样本与标签（0 原序，1 打乱）
+                    # Generate reordered samples and labels: 0 = original order, 1 = shuffled.
                     xr = torch.zeros_like(x_flat)
                     temporal_labels = []
                     for i in range(b):
@@ -415,17 +415,17 @@ class Trainer(object):
                         temporal_labels.append(lbl)
                     temporal_labels = torch.tensor(temporal_labels, device=x.device).long()
 
-                    # 过 backbone，与其它 pretext 一致的聚合方式
+                    # Run the backbone and aggregate consistently with other pretext tasks.
                     feats_temporal = self.model.backbone(xr.view(b, ch, seg, pts))
                     temporal_feats = feats_temporal.mean(dim=1).view(b, -1)
 
-                    # 2 类 CE
+                    # Two-class cross-entropy
                     temporal_logits = self.model.temporal.classifier(temporal_feats)
                     loss_temporal = F.cross_entropy(temporal_logits, temporal_labels)
 
                     loss = loss_class + self.params.pretext_weight_temporal * loss_temporal
                 elif self.params.pretext == 'reverse':
-                    # 将输入展开为 (batch, channels, total_time)
+                    # Flatten inputs to (batch, channels, total_time).
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)         # Flatten to (b, 64, total_time)
                     flipped_x = torch.zeros_like(x_flat)      # Placeholder for flipped data
@@ -446,10 +446,10 @@ class Trainer(object):
                     loss = loss_class + self.params.pretext_weight_reverse * loss_reverse
                 elif self.params.pretext == 'all':
                     if self.params.downstream_dataset == 'BCIC2020-3':
-                        # 自监督任务步：同时计算 Band、Amp 三个任务的损失
+                        # Self-supervised step: compute Band and Amp losses.
                         b, ch, seg, pts = x.shape
                         x_flat = x.view(b, ch, seg * pts)
-                        # Band 任务
+                        # Band task
                         filtered_x = torch.zeros_like(x_flat)
                         band_labels = []
                         sfreq_tensor = torch.tensor([200], device=x.device)
@@ -463,7 +463,7 @@ class Trainer(object):
                         band_feats_flat = band_feats.view(b, -1)
                         band_logits = self.model.band.classifier(band_feats_flat)
                         loss_band = F.cross_entropy(band_logits, band_labels)
-                        # Amp 任务
+                        # Amp task
                         scaled_x = torch.zeros_like(x_flat)
                         amp_labels = []
                         for i in range(b):
@@ -476,7 +476,7 @@ class Trainer(object):
                         amp_feats_flat = amp_feats.view(b, -1)
                         amp_logits = self.model.amp.classifier(amp_feats_flat)
                         loss_amp = F.cross_entropy(amp_logits, amp_labels)
-                        # # Phase 任务
+                        # # Phase task
                         # shifted_x = torch.zeros_like(x_flat)
                         # phase_labels = []
                         # for i in range(b):
@@ -489,7 +489,7 @@ class Trainer(object):
                         # phase_feats_flat = phase_feats.view(b, -1)
                         # phase_logits = self.model.phase.classifier(phase_feats_flat)
                         # loss_phase = F.cross_entropy(phase_logits, phase_labels)
-                        # # 总自监督损失加权求和
+                        # # Weighted sum of self-supervised losses
                         total_pretext_loss = (
                             loss_class +
                             self.params.pretext_weight_band * loss_band +
@@ -499,7 +499,7 @@ class Trainer(object):
                     elif self.params.downstream_dataset == 'BCIC-IV-2a':
                         b, ch, seg, pts = x.shape
                         x_flat = x.view(b, ch, seg * pts)
-                        # Band 任务
+                        # Band task
                         filtered_x = torch.zeros_like(x_flat)
                         band_labels = []
                         sfreq_tensor = torch.tensor([200], device=x.device)
@@ -513,7 +513,7 @@ class Trainer(object):
                         band_feats_flat = band_feats.view(b, -1)
                         band_logits = self.model.band.classifier(band_feats_flat)
                         loss_band = F.cross_entropy(band_logits, band_labels)
-                        # Temporal 任务
+                        # Temporal task
                         xr = torch.zeros_like(x_flat)
                         temporal_labels = []
                         for i in range(b):
@@ -524,19 +524,19 @@ class Trainer(object):
 
                         feats_temporal = self.model.backbone(xr.view(b, ch, seg, pts))
                         temporal_feats = feats_temporal.mean(dim=1).view(b, -1)
-                        # 2 类 CE
+                        # Two-class cross-entropy
                         temporal_logits = self.model.temporal.classifier(temporal_feats)
                         loss_temporal = F.cross_entropy(temporal_logits, temporal_labels)
-                        # # 总自监督损失加权求和
+                        # # Weighted sum of self-supervised losses
                         total_pretext_loss = (
                             loss_class +
                             self.params.pretext_weight_band * loss_band +
                             self.params.pretext_weight_temporal * loss_temporal
                             # self.params.pretext_weight_phase * loss_phase
                             )
-                    loss = total_pretext_loss  # 本步不包含主任务损失
+                    loss = total_pretext_loss  # This step excludes the main-task loss.
                 else:
-                    # 未使用任何自监督任务
+                    # No self-supervised task is enabled.
                     loss = loss_class
 
                 loss.backward()
@@ -624,11 +624,11 @@ class Trainer(object):
                 pred = self.model(x)
 
                 loss_class = self.criterion(pred, y)
-                # 根据预训练任务配置，计算自监督任务损失
+                # Compute self-supervised losses according to the pretext-task configuration.
                 if self.params.pretext == 'band':
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
-                    # Band 任务
+                    # Band task
                     filtered_x = torch.zeros_like(x_flat)
                     band_labels = []
                     sfreq_tensor = torch.tensor([200], device=x.device)
@@ -695,7 +695,7 @@ class Trainer(object):
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
 
-                    # 生成重排样本与标签（0 原序，1 打乱）
+                    # Generate reordered samples and labels: 0 = original order, 1 = shuffled.
                     xr = torch.zeros_like(x_flat)
                     temporal_labels = []
                     for i in range(b):
@@ -704,11 +704,11 @@ class Trainer(object):
                         temporal_labels.append(lbl)
                     temporal_labels = torch.tensor(temporal_labels, device=x.device).long()
 
-                    # 过 backbone，与其它 pretext 一致的聚合方式
+                    # Run the backbone and aggregate consistently with other pretext tasks.
                     feats_temporal = self.model.backbone(xr.view(b, ch, seg, pts))
                     temporal_feats = feats_temporal.mean(dim=1).view(b, -1)
 
-                    # 2 类 CE
+                    # Two-class cross-entropy
                     temporal_logits = self.model.temporal.classifier(temporal_feats)
                     loss_temporal = F.cross_entropy(temporal_logits, temporal_labels)
 
@@ -730,10 +730,10 @@ class Trainer(object):
                     loss_channel = F.cross_entropy(channel_logits, channel_labels)
                     loss = loss_class + self.params.pretext_weight_channel * loss_channel
                 elif self.params.pretext == 'all':
-                    # 自监督任务步：同时计算 Band、Amp、Phase 三个任务的损失
+                    # Self-supervised step: compute Band, Amp, and Phase losses.
                     b, ch, seg, pts = x.shape
                     x_flat = x.view(b, ch, seg * pts)
-                    # Band 任务
+                    # Band task
                     filtered_x = torch.zeros_like(x_flat)
                     band_labels = []
                     sfreq_tensor = torch.tensor([200], device=x.device)
@@ -747,7 +747,7 @@ class Trainer(object):
                     band_feats_flat = band_feats.view(b, -1)
                     band_logits = self.model.band.classifier(band_feats_flat)
                     loss_band = F.cross_entropy(band_logits, band_labels)
-                    # Channel 任务
+                    # Channel task
                     channel_labels = []
                     channel_shuffled_x = torch.zeros_like(x_flat)
                     for i in range(b):
@@ -760,7 +760,7 @@ class Trainer(object):
                     channel_feats_flat = channel_feats.view(b, -1)
                     channel_logits = self.model.channel.classifier(channel_feats_flat)
                     loss_channel = F.cross_entropy(channel_logits, channel_labels)
-                    # 总自监督损失加权求和
+                    # Weighted sum of self-supervised losses
                     loss = (
                         loss_class +
                         self.params.pretext_weight_band * loss_band +

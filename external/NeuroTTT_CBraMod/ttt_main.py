@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from sklearn.metrics import balanced_accuracy_score, f1_score, cohen_kappa_score, confusion_matrix
 
-# 引入所需的数据集加载模块和模型模块
+# Import the required dataset loaders and model modules.
 from datasets import speech_dataset, stress_dataset, bciciv2a_dataset
 from datasets.config import SplitConfig
 from models import model_for_speech, model_for_stress, model_for_bciciv2a
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # 设置下游数据集正确的类别数
+    # Set the correct class count for the downstream dataset.
     if args.downstream_dataset == 'BCIC2020-3':
         args.num_of_classes = 5
     elif args.downstream_dataset == 'MentalArithmetic':
@@ -56,10 +56,10 @@ if __name__ == "__main__":
     elif args.downstream_dataset == 'BCIC-IV-2a':
         args.num_of_classes = 4
 
-    # 固定CUDA设备
+    # Fix the CUDA device.
     torch.cuda.set_device(args.cuda)
 
-    # 根据数据集选择正确的模型和数据加载器
+    # Select the model and loader for the dataset.
     if args.downstream_dataset == 'MentalArithmetic':
         load_dataset = stress_dataset.LoadDataset(args)
         data_loader = load_dataset.get_data_loader()
@@ -71,90 +71,90 @@ if __name__ == "__main__":
         data_loader = load_dataset.get_data_loader(config)
         model = model_for_speech.Model(args)
     elif args.downstream_dataset == 'BCIC-IV-2a':
-        # BCIC-IV-2a 不需要 SplitConfig，直接加载数据集
+        # BCIC-IV-2a loads directly without SplitConfig.
         load_dataset = bciciv2a_dataset.LoadDataset(args)
         data_loader = load_dataset.get_data_loader()
         model = model_for_bciciv2a.Model(args)
     else:
         raise ValueError(f"Dataset {args.downstream_dataset} not supported in TTT")
 
-    # DataLoader的batch_size为1，逐样本迭代
+    # Iterate over individual samples with DataLoader batch_size=1.
     test_loader = DataLoader(
         data_loader['test'].dataset,
         batch_size=1, shuffle=False,
         collate_fn=data_loader['test'].dataset.collate
     )
 
-    # 不加载预训练基础权重（直接用finetuned权重）
+    # Load fine-tuned weights directly, without loading base pretrained weights.
     args.use_pretrained_weights = False
     model = model.cuda()
-    # 加载微调后的模型参数
+    # Load fine-tuned model parameters.
     model.load_state_dict(torch.load(args.model_path, map_location=f'cuda:{args.cuda}'))
-    model.eval()  # 模型设为eval模式以禁用Dropout等
+    model.eval()  # Disable dropout and other training-only behavior.
     print("Loaded model weights from", args.model_path)
 
-    # 准备评估指标收集
+    # Prepare evaluation metric collection.
     truths = []
     preds = []
     
-    # 确定要使用的自监督任务列表
+    # Select the self-supervised tasks.
     if args.pretext == 'none':
         task_list = []
     elif args.pretext == 'all':
         if args.downstream_dataset == 'MentalArithmetic':
-            task_list = ['band', 'channel']  # MentalArithmetic只支持band和channel
+            task_list = ['band', 'channel']  # MentalArithmetic supports only band and channel.
         elif args.downstream_dataset == 'BCIC2020-3':
             task_list = ['band', 'amp']
         elif args.downstream_dataset == 'BCIC-IV-2a':
-            task_list = ['band', 'temporal']  # BCIC-IV-2a支持band和temporal
+            task_list = ['band', 'temporal']  # BCIC-IV-2a supports band and temporal.
     else:
         task_list = [args.pretext]
 
     print(f"Using pretext tasks: {task_list}")
 
-    # 遍历测试集中每个样本
+    # Iterate over each test sample.
     for data, label in test_loader:
         x = data.cuda()
         y_true = label.item()
         truths.append(y_true)
 
         if len(task_list) == 0 or args.ttt_steps <= 0:
-            # 无自监督任务或步数为0，直接进行推理
+            # Run inference directly if there is no self-supervised task or zero update steps.
             model.eval()
             with torch.no_grad():
                 logits = model(x)
                 if args.downstream_dataset == 'MentalArithmetic':
-                    # 二分类任务，使用sigmoid激活函数处理标量输出
+                    # For binary classification, apply sigmoid to the scalar output.
                     pred_label = (torch.sigmoid(logits) > 0.5).int().item()
                 else:
-                    # 多分类任务，使用argmax
+                    # For multiclass classification, use argmax.
                     pred_label = torch.argmax(logits, dim=-1).item()
             preds.append(pred_label)
             continue
         
-        # 保存模型当前权重，以便后续恢复（如果非 online 模式）
+        # Save current weights for restoration outside online mode.
         if not args.online:
             original_state = copy.deepcopy(model.state_dict())
 
-        # 冻结主任务分类头，仅更新骨干网络和自监督任务头
+        # Freeze the main classifier; update only the backbone and self-supervised heads.
         for param in model.classifier.parameters():
             param.requires_grad = False
         
-        # 启用训练模式
+        # Enable training mode.
         model.train()
         
-        # 准备优化器
+        # Prepare the optimizer.
         optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, model.parameters()), lr=args.ttt_lr)
 
-        # 多步更新        
+        # Multiple update steps
         steps = max(int(args.ttt_steps), 0)
         for _ in range(steps):
             optimizer.zero_grad()
             b, ch, seg, pts = x.shape  # b=1
-            x_flat = x.view(b, ch, seg * pts)  # 展平
+            x_flat = x.view(b, ch, seg * pts)  # Flatten.
             
             if args.pretext == 'band':
-                # Band任务
+                # Band task
                 sfreq_tensor = torch.tensor([200], device=x.device)
                 fx, band_idx = model.band.reject_band(x_flat, sfreq_tensor)
                 band_label = torch.tensor([band_idx], device=x.device).long()
@@ -164,7 +164,7 @@ if __name__ == "__main__":
                 band_logits = model.band.classifier(band_feats_flat)
                 loss = F.cross_entropy(band_logits, band_label)
             elif args.pretext == 'channel':
-                # Channel任务
+                # Channel task
                 x_ch_shuffle, ch_label = model.channel.swap_one_ap_pair(x_flat)
                 channel_label = torch.tensor([ch_label], device=x.device).long()
                 feats = model.backbone(x_ch_shuffle.view(b, ch, seg, pts))
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                 channel_logits = model.channel.classifier(channel_feats_flat)
                 loss = F.cross_entropy(channel_logits, channel_label)
             elif args.pretext == 'temporal':
-                # Temporal任务
+                # Temporal task
                 xr = torch.zeros_like(x_flat)
                 temporal_labels = []
                 for i in range(b):
@@ -188,7 +188,7 @@ if __name__ == "__main__":
                 loss = F.cross_entropy(temporal_logits, temporal_labels)
             elif args.pretext == 'all':
                 if args.downstream_dataset == 'MentalArithmetic':
-                    # Band任务
+                    # Band task
                     sfreq_tensor = torch.tensor([200], device=x.device)
                     fx, band_idx = model.band.reject_band(x_flat, sfreq_tensor)
                     band_label = torch.tensor([band_idx], device=x.device).long()
@@ -198,7 +198,7 @@ if __name__ == "__main__":
                     band_logits = model.band.classifier(band_feats_flat)
                     loss_band = F.cross_entropy(band_logits, band_label)
                     
-                    # Channel任务
+                    # Channel task
                     x_ch_shuffle, ch_label = model.channel.swap_one_ap_pair(x_flat)
                     channel_label = torch.tensor([ch_label], device=x.device).long()
                     feats_channel = model.backbone(x_ch_shuffle.view(b, ch, seg, pts))
@@ -207,11 +207,11 @@ if __name__ == "__main__":
                     channel_logits = model.channel.classifier(channel_feats_flat)
                     loss_channel = F.cross_entropy(channel_logits, channel_label)
                     
-                    # 总损失
+                    # Total loss
                     loss = (args.pretext_weight_band * loss_band + 
                             args.pretext_weight_channel * loss_channel)
                 elif args.downstream_dataset == 'BCIC2020-3':
-                    # Band任务
+                    # Band task
                     sfreq_tensor = torch.tensor([200], device=x.device)
                     fx, band_idx = model.band.reject_band(x_flat, sfreq_tensor)
                     band_label = torch.tensor([band_idx], device=x.device).long()
@@ -221,7 +221,7 @@ if __name__ == "__main__":
                     band_logits = model.band.classifier(band_feats_flat)
                     loss_band = F.cross_entropy(band_logits, band_label)
                     
-                    # Amp任务
+                    # Amp task
                     x_scaled, scale_label = model.amp.scale_amp(x_flat)
                     amp_label = torch.tensor([scale_label], device=x.device).long()
                     feats = model.backbone(x_scaled.view(b, ch, seg, pts))
@@ -233,7 +233,7 @@ if __name__ == "__main__":
                     loss = (args.pretext_weight_band * loss_band +
                             args.pretext_weight_amp * loss_amp)
                 elif args.downstream_dataset == 'BCIC-IV-2a':
-                    # Band任务
+                    # Band task
                     sfreq_tensor = torch.tensor([200], device=x.device)
                     fx, band_idx = model.band.reject_band(x_flat, sfreq_tensor)
                     band_label = torch.tensor([band_idx], device=x.device).long()
@@ -243,7 +243,7 @@ if __name__ == "__main__":
                     band_logits = model.band.classifier(band_feats_flat)
                     loss_band = F.cross_entropy(band_logits, band_label)
                     
-                    # Temporal任务
+                    # Temporal task
                     xr = torch.zeros_like(x_flat)
                     temporal_labels = []
                     for i in range(b):
@@ -257,39 +257,39 @@ if __name__ == "__main__":
                     temporal_logits = model.temporal.classifier(temporal_feats)
                     loss_temporal = F.cross_entropy(temporal_logits, temporal_labels)
                     
-                    # 总损失
+                    # Total loss
                     loss = (args.pretext_weight_band * loss_band +
                             args.pretext_weight_temporal * loss_temporal)
             else:
-                # 未指定已知的自监督任务，跳过
+                # Skip if no recognized self-supervised task is specified.
                 continue
 
-            # 反向传播并单步更新
+            # Backpropagate and take one update step.
             loss.backward()
             optimizer.step()
 
-        # 恢复模型评估模式
+        # Restore evaluation mode.
         model.eval()
-        # 用更新后的模型对原始样本进行主任务预测
+        # Predict the main task on the original sample using the updated model.
         with torch.no_grad():
             logits = model(x)
             if args.downstream_dataset == 'MentalArithmetic':
-                # 二分类任务，使用sigmoid激活函数处理标量输出
+                # For binary classification, apply sigmoid to the scalar output.
                 pred_label = (torch.sigmoid(logits) > 0.5).int().item()
             else:
-                # 多分类任务，使用argmax
+                # For multiclass classification, use argmax.
                 pred_label = torch.argmax(logits, dim=-1).item()
         preds.append(pred_label)
         
-        # 恢复模型参数到初始状态（如果不是online模式）
+        # Restore initial model parameters outside online mode.
         if not args.online:
             model.load_state_dict(original_state)
         
-        # 重置参数的requires_grad状态（解冻分类头）
+        # Reset requires_grad flags and unfreeze the classification head.
         for param in model.classifier.parameters():
             param.requires_grad = True
 
-    # 计算指标：Balanced Accuracy、Cohen's Kappa、加权F1等
+    # Compute balanced accuracy, Cohen's kappa, weighted F1, and other metrics.
     truths_arr = np.array(truths)
     preds_arr = np.array(preds)
     acc = balanced_accuracy_score(truths_arr, preds_arr)
@@ -297,7 +297,7 @@ if __name__ == "__main__":
     f1 = f1_score(truths_arr, preds_arr, average='weighted')
     cm = confusion_matrix(truths_arr, preds_arr)
     
-    # 输出结果
+    # Output results.
     print(f"******** Results STEPS:{args.ttt_steps}, LR: {args.ttt_lr}, B: {args.batch_size} ********")
     print(f"Balanced Accuracy: {acc:.5f}, Cohen Kappa: {kappa:.5f}, Weighted F1: {f1:.5f}")
     print("Confusion Matrix:")

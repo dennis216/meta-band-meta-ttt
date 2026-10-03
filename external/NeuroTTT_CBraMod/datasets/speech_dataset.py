@@ -80,21 +80,21 @@ class CustomDatasetWithSplit(Dataset):
         y_label = np.array([x[1] for x in batch])
         return to_tensor(x_data), to_tensor(y_label).long()
 
-# 把有标签数据集包装成“无标签视图”
+# Wrap a labeled dataset as an unlabeled view.
 class UnlabeledWrapper(Dataset):
     def __init__(self, base_ds):
         self.base = base_ds
     def __len__(self):
         return len(self.base)
     def __getitem__(self, idx):
-        x, _ = self.base[idx]   # 丢弃 label
+        x, _ = self.base[idx]   # Discard the label.
         return x
 
-    # 只拼接 x 的 collate（用于无标签训练）
+    # Collate x only for unlabeled training.
     def collate_unlabeled(self, batch):
-        # batch: List[x]，其中 x 是 numpy 数组或张量
+        # batch: List[x], where x is a NumPy array or tensor.
         x_data = np.array(batch)
-        return to_tensor(x_data)    # 返回仅包含 x 的张量
+        return to_tensor(x_data)    # Return a tensor containing only x.
 
 class LoadDataset(object):
     def __init__(self, params):
@@ -241,7 +241,7 @@ class LoadDataset(object):
 
     def get_target_loaders(self, split_by : str = 'default'):
         # TODO: support splitting via subj ids
-        # 目标域无标签训练：基于 train split，但抹掉标签
+        # Unlabeled target-domain training: use the train split with labels removed.
         if split_by != 'default':
             raise NotImplementedError(f"Splitting by {split_by} is not supported for speech dataset")
 
@@ -249,11 +249,11 @@ class LoadDataset(object):
         self.target_train_loader = DataLoader(
             target_train_set,
             batch_size=self.params.batch_size,
-            collate_fn=target_train_set.collate_unlabeled,  # 只拼 x
+            collate_fn=target_train_set.collate_unlabeled,  # Collate x only.
             shuffle=True,
         )
 
-        # 目标域有标签测试：直接用 test split，保持原 collate（含 x 和 y）
+        # Labeled target-domain testing: use the test split and original collate with x and y.
         target_test_set = CustomDataset(self.datasets_dir, mode='test')
         self.target_test_loader = DataLoader(
             target_test_set,

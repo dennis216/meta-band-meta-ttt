@@ -4,9 +4,9 @@ import numpy as np
 import lmdb
 import pickle
 
-#遍历文件夹
+# Traverse folders.
 def iter_files(rootDir):
-    #遍历根目录
+    # Traverse the root directory.
     files_H, files_MDD = [], []
     for file in os.listdir(rootDir):
         if 'TASK' not in file:

@@ -1,119 +1,119 @@
-# TUSZ Meta-TTT v2 性能优化复盘与可复用经验
+# TUSZ Meta-TTT v2: performance findings and reusable lessons
 
-记录日期：2026-09-15。硬件为单张 RTX 5090（32 GB），本轮正式开发训练暂用 seed 3407。本文件记录的是训练工程和吞吐经验；检测收益需由后续完整记录评价给出。原始协议与阶段性数据见 [`tusz-meta-ttt-v2-performance-revision.md`](tusz-meta-ttt-v2-performance-revision.md)。
+Recorded on 2026-09-15 using one RTX 5090 (32 GB). Formal development training currently uses seed 3407. This document records engineering and throughput findings; detection gains require subsequent full-record evaluation. See the original protocol and interim measurements in [tusz-meta-ttt-v2-performance-revision.md](tusz-meta-ttt-v2-performance-revision.md).
 
-## 1. 优化目标和统一计量方式
+## 1. Optimization target and measurement conventions
 
-最终目标是以相同数据覆盖、相同条件数完成一遍 Meta 训练所需的时间。训练至少包含患者/记录读取、全部有效 2 秒步长窗口、SSL 变换、冻结 encoder 前缀、最后两层二阶 inner update、未来或当前 chunk 的检测 BCE，以及每四名患者的一次 outer step。
+The target is the time required for one Meta-training traversal with identical data coverage and condition counts. Training includes patient/record reads, every valid window at a 2-second stride, SSL transforms, the frozen encoder prefix, second-order inner updates of the last two layers, future/current chunk detection BCE, and an outer step after every four patients.
 
-比较时分别写明：
+Report the following separately:
 
-- **训练计算段秒数**：模型和数据加载后，到训练计算结束；适合定位算子优化。
-- **完整墙钟秒数**：含启动、读取、checkpoint 和写出；适合排队预算。
-- **合计 inner updates/s**：各独立条件的更新次数之和除以上述时间。它衡量处理整个实验矩阵的速度；不能把条件数增加后得到的总更新量解释成更多独立 EEG。
-- **整卡 GPU 指标**：利用率、已用显存和功率来自 `nvidia-smi`，不归因到单个条件。采样区分冷启动和稳态。
-- **正确性指标**：同一批记录的窗口覆盖、分类损失、更新接受决策、模型/SSL head 最终参数、元梯度，随后还要比较实际概率及事件报警。
+- **Training-computation seconds:** from completion of model/data loading to completion of training computation; useful for operator optimization.
+- **Total wall-clock seconds:** includes startup, reading, checkpoints, and writing; useful for queue budgets.
+- **Aggregate inner updates/s:** summed updates across independent conditions divided by the specified time. This measures experimental-matrix throughput, not additional independent EEG exposure.
+- **Whole-GPU metrics:** NVIDIA-SMI utilization, allocated memory, and power cannot be attributed to a single condition. Separate cold-start and steady-state samples.
+- **Correctness:** compare window coverage, classification losses, acceptance decisions, final model/SSL-head parameters, and meta-gradients on the same records; subsequently compare probabilities and event alarms.
 
-功率曾被设为至少 480 W 的诊断目标，之后用户明确把最终训练速度作为选择标准。较高功率不能代替吞吐测量，也不能证明二阶图已经有效利用 GPU。
+Power of at least 480 W was initially a diagnostic target; the user subsequently prioritized final training speed. High power neither substitutes for throughput measurement nor proves that the second-order graph uses the GPU effectively.
 
-短记录 benchmark 按已排序的 Train-fit 记录截取，患者和时长分布不代表全部 TUSZ；不同记录集、不同 F/C 组合和不同物理患者批次的秒数不能直接相除得出方法收益。
+Short-record benchmarks take prefixes of sorted Train-fit records, which do not represent the full TUSZ patient or duration distribution. Times from different record sets, F/C combinations, or physical patient batches cannot be divided directly to infer method improvements.
 
-## 2. 最初的瓶颈：CPU 发射大量微小 GPU 操作
+## 2. Initial bottleneck: CPU dispatch of many tiny GPU operations
 
-早期四条件 Mask 测试在 24 条真实记录上每条件完成 560 次更新，总吞吐约 20.81 updates/s，平均功率仅 212.5 W。八个独立进程增加到约 21.01 updates/s，十二个为 20.81 updates/s；峰值显存却从 8,282 MiB 增至 14,886、21,344 MiB。增加进程实际复制了模型、optimizer 和前缀计算，GPU 占用数字上升不等于总任务变快。
+An early four-condition Mask test on 24 real records performed 560 updates per condition at approximately 20.81 updates/s and 212.5 W mean power. Eight independent processes reached approximately 21.01 updates/s, and twelve reached 20.81 updates/s, while peak memory rose from 8,282 MiB to 14,886 and 21,344 MiB. Additional processes duplicated models, optimizers, and prefix computation; higher GPU occupancy readings did not mean faster completion.
 
-三段真实四步 Meta profiler 捕获约 26,010 个 GPU kernel、22,446 次 `cudaLaunchKernel`。许多 kernel 仅持续微秒；记录中的单个 Python 训练进程接近占满一个 CPU 核，而整机 32 逻辑核的总占用仍低。瓶颈主要是 Python/autograd 调度和 kernel 发射碎片，而非简单缺少 CPU worker。Profiler 自身会引入开销；其中约 120.9 ms 的 GPU kernel 活跃区间、约 1,133 ms 的首末 kernel 跨度不能作为正式训练 SM 占用率或分阶段比例。
+A real four-step Meta profile over three segments captured approximately 26,010 GPU kernels and 22,446 `cudaLaunchKernel` calls. Many kernels lasted microseconds. One Python training process nearly saturated a CPU core while aggregate usage across 32 logical cores remained low. Python/autograd scheduling and fragmented kernel launches were the main bottlenecks, not simply too few CPU workers. Profiling adds overhead: approximately 120.9 ms of active kernels within a 1,133 ms first-to-last-kernel interval must not be reported as production SM utilization or stage percentages.
 
-可复用判断：先看同等数据和条件数下的墙钟与 updates/s，再结合 CPU 单核、kernel 时长、内存和功率判断是否需要增加大批计算。只看 `nvidia-smi` 的瞬时利用率容易选到更慢的方案。
+Compare wall time and updates/s at matched data and condition counts first, then inspect single-core CPU load, kernel duration, memory, and power when deciding whether to enlarge computational batches. Instantaneous NVIDIA-SMI utilization alone can favor a slower configuration.
 
-## 3. 从小操作整合到大并行计算
+## 3. Combining small operations into larger parallel computations
 
-### 3.1 合并最后两层的 inner 更新计算
+### 3.1 Pack inner updates for the final two layers
 
-原实现按多个小参数分别检查 finite、求范数、计算相对步长和 Armijo 候选，包含较多 CPU/GPU 同步。`update.py` 中的 packed 版本按 Transformer block 拼接参数和梯度，统一计算 block 范数、方向、漂移，再拆回参数视图。Armijo 候选的 SSL loss 在 `no_grad` 下检查，但被接受的更新保留二阶计算图。相对更新的分母仍参与元梯度，不通过缩放 SSL loss 任意关闭或放大更新。
+The original implementation checked finite values, norms, relative steps, and Armijo candidates separately across many small parameters, causing CPU/GPU synchronization. The packed implementation in `update.py` concatenates parameters and gradients within each Transformer block, computes block norms, directions, and drift together, then reconstructs parameter views. Armijo candidate SSL losses are checked under `no_grad`, while accepted updates retain their second-order graphs. Relative-step denominators remain differentiable so scaling the SSL loss cannot arbitrarily disable or amplify adaptation.
 
-Mask 的遮挡位置原用动态布尔索引；改为固定尺寸、稳定排序的索引和 `gather`，避免因输出长度需由 GPU 计算而触发 host 同步。时间和频谱两分支共用遮挡位置，loss 仍只作用于被遮挡部分。3/5/7 个遮挡位置的 loss、一阶及二阶梯度与旧定义对照通过。
+Mask originally used dynamic Boolean indexing. Fixed-size, stably sorted indices and `gather` avoid host synchronization to determine output length. Time and spectral branches share masked positions, and loss still covers only masked elements. Comparisons passed for loss and first-/second-order gradients with 3/5/7 masked positions.
 
-相同 24 条记录、四独立条件的 Mask 增量实测：
+Incremental Mask measurements on the same 24 records and four independent conditions:
 
-| 实现 | 完整墙钟 | 合计 updates/s | 变化 |
+| Implementation | Total wall time | Aggregate updates/s | Change |
 |---|---:|---:|---|
-| 减少逐参数 host 同步 | 107.64 s | 20.81 | 参考 |
-| packed block 更新 + Mask gather | 73.71 s | 30.39 | 吞吐约提升 46% |
-| 再加入冻结前缀 CUDA Graph | 62.86 s | 35.64 | 相对参考约提升 71% |
+| Reduced per-parameter host synchronization | 107.64 s | 20.81 | Reference |
+| Packed block updates + Mask gather | 73.71 s | 30.39 | Approximately 46% higher throughput |
+| With frozen-prefix CUDA Graph | 62.86 s | 35.64 | Approximately 71% above reference |
 
-这组试验同时启用了 packed 和 gather，不能把 46% 拆成二者各自贡献。八进程下三组分别为 21.01、30.58、36.49 updates/s，说明操作整合比继续复制进程更有效。
+Packing and gather were introduced together, so their individual contributions cannot be separated from the 46% improvement. With eight processes, the corresponding rates were 21.01, 30.58, and 36.49 updates/s, supporting operation consolidation over further process replication.
 
-### 3.2 缓存并重放冻结前缀
+### 3.2 Cache and replay the frozen prefix
 
-模型分为 patch embedding + 前十层冻结 encoder、最后两层可适应 encoder 和 detector。冻结前缀输出可由多个 F/C 条件复用，且不保存反向图。相同形状的 CUDA Graph 在 side stream 暖启动后捕获；图重放时把静态输出 `clone` 成独立存储。这个 clone 是正确性必需：四步展开会在后缀反传时读取先前窗口的前缀，不能让下一次重放覆盖历史值。不常见的末尾形状回退 eager，Graph 缓存数量限定为四类以控制显存。
+The model is split into patch embedding plus ten frozen encoder layers, two adaptable encoder layers, and a detector. F/C conditions can reuse frozen-prefix outputs without backward graphs. Same-shape CUDA Graphs are captured after side-stream warmup, and replay outputs are cloned into independent storage. Cloning is necessary because four-step suffix backward reads earlier prefixes, which later replays must not overwrite. Uncommon final-chunk shapes fall back to eager execution, and the graph cache is limited to four shapes to control memory.
 
-实际 CBraMod 的 Band 和 Mask 验证包括前缀输出、跨重放存储独立性、四步 Meta 参数与梯度；图与 eager 的测试最大差为零。候选 Armijo 检查也复用已算出的冻结前缀，避免每次试算重新跑整段 backbone。
+Real CBraMod Band/Mask checks cover prefix outputs, independent storage across replays, and four-step Meta parameters and gradients. The tested maximum graph/eager difference was zero. Armijo candidate checks also reuse prefixes instead of recomputing the whole backbone.
 
-### 3.3 同时并行独立患者和独立 outer 条件
+### 3.3 Batch independent patients and outer conditions
 
-`batched.py` 以 leading lane 维表示不同患者的 fast weights，`vmap` 对最后两层和独立 detector/SSL head 执行函数式计算。每个患者的 inner 梯度、Armijo 接受决策、记录 reset 和漂移上限分别计算；每个 E/ED/ES/EDS 条件仍保留独立模型、head、optimizer 和 checkpoint。只有只读冻结前缀及确定性的支持视图共享。
+`batched.py` represents patient fast weights along a leading lane dimension and uses `vmap` for functional computation of the final two layers and independent detector/SSL heads. Inner gradients, Armijo decisions, record resets, and drift caps are patient-specific. E/ED/ES/EDS conditions retain independent models, heads, optimizers, and checkpoints; only read-only prefixes and deterministic support views are shared.
 
-PyTorch 的 MHA native inference fastpath 在 BatchedTensor 场景下误判 `requires_grad`，该算子缺少可用反传。并行二阶路径显式关闭 MHA native fastpath 和 flash/memory-efficient/cuDNN SDP，选择经过验证的 math attention。直接套 `vmap` 而不检查 double backward，会在训练而非前向阶段出错。
+PyTorch's native MHA inference fastpath misinterpreted `requires_grad` with BatchedTensor, and that operator lacked usable backward support. The parallel second-order path explicitly disables native MHA fastpath and flash/memory-efficient/cuDNN SDP, using verified math attention. Applying `vmap` without double-backward checks can fail during training even when forward succeeds.
 
-另一个二阶细节是空闲 lane 的零梯度。先算 `sqrt(norm²)` 再平方会在零处引入不可导中间步骤；更新分母改用直接的平方范数，诊断范数单独 detach。若任一 lane 的梯度非有限，当前实现保守地拒绝整个并行 inner 批次，保持更新前参数并计数，避免 `where` 的零乘 NaN 污染 outer backward。这会连健康 lane 一并拒绝，必须在正式报告中显示拒绝数。
+Idle lanes introduce another second-order issue: computing `sqrt(norm²)` and then squaring creates a nondifferentiable intermediate at zero. The update denominator now uses the squared norm directly; diagnostic norms are detached. If any lane gradient is nonfinite, the implementation conservatively rejects the entire parallel inner batch, preserves previous parameters, and records the rejection to prevent zero-times-NaN contamination through `where`. Healthy lanes are also rejected and must be counted in reports.
 
-相同 48 条 Train-fit 记录、15 名患者、四个 F 条件：四个独立进程的整体墙钟为 109.28 s，合计 43.30 updates/s；单进程合并四条件的训练计算段为 63.24 s，约 74.82 updates/s。两进程各装两个条件的整体墙钟 75.06 s、63.04 updates/s。四条件合并后的 FP32 模型参数与独立运行最大差约 1.13e-6，SSL head 约 1.56e-6。
+On the same 48 Train-fit records, 15 patients, and four F conditions, four independent processes took 109.28 s total wall time at 43.30 updates/s. A single four-condition process took 63.24 s of training computation at approximately 74.82 updates/s. Two processes with two conditions each took 75.06 s wall time at 63.04 updates/s. Maximum FP32 parameter differences from independent execution were approximately 1.13e-6 for models and 1.56e-6 for SSL heads.
 
-16 lane、缓存前缀的合成持续二阶探针达到约 200.87 updates/s、采到 497–506 W。这证明大批并行的硬件潜力，但探针没有 EDF 读取、SSL 变换或全部模型前缀，不能用于全量训练时间预算。
+A synthetic sustained second-order probe with 16 lanes and cached prefixes reached approximately 200.87 updates/s and sampled 497–506 W. This demonstrates hardware potential but excludes EDF reads, SSL transforms, and full prefix computation, so it cannot budget full training.
 
-### 3.4 将 F 与 C 的相同信号计算放在一起
+### 3.4 Share identical signal computations between F and C
 
-F 用当前 chunk 更新、预测未来 chunk；C 用当前完整 chunk 更新后回顾性预测当前 chunk。二者分别训练和统计，但同一患者同一 chunk 的原始信号可共享。联合调度器缓存每患者最近的前一、当前、下一 raw prefix，以免 F 提前取下一 chunk 时冲掉 C 随后要用的当前值。F 在 EDF 的末 chunk 不作无用途更新，但该末 chunk 的原始信号不能置零，因为 C 仍用它更新。
+F updates on the current chunk and predicts a future chunk. C adapts using the entire current chunk and predicts it retrospectively. They are trained and reported separately but may share raw signal computations for the same patient/chunk. The joint scheduler caches each patient's previous, current, and next raw prefix so F's early query read does not evict the value C still needs. F skips the useless update on the final EDF chunk, but its raw signal must not be zeroed because C still updates on it.
 
-联合 Mask 的 48 条记录、F/C × 四条件，共 9,656 次更新：训练计算段 79.52 s，121.42 updates/s；完整墙钟 85.91 s，112.40 updates/s，峰值整卡显存 20,543 MiB，稳态平均功率约 435 W。每个条件独立的标签和类别权重仍只计一次，F 的第一次直接 BCE 与末次查询、C 的全部当前查询均保留。
+Joint Mask over 48 records and F/C × four conditions performed 9,656 updates: 79.52 s training computation (121.42 updates/s), 85.91 s total wall time (112.40 updates/s), 20,543 MiB peak whole-GPU memory, and approximately 435 W steady-state mean power. Each condition counts each label and class weight once; F retains its first direct BCE and final query, and C retains all current queries.
 
-Band 的相同八条件联合运行约 275.28 s 训练计算段，完整墙钟 281.95 s，34.25 updates/s，峰值显存 29,500 MiB，稳态功率 481.84 W。Band 每个支持窗口有五个频带视图，显存和变换成本显著高于 Mask；因此在 30 GiB 监控预算下采用一次一名患者的位置。
+The equivalent eight-condition Band run took approximately 275.28 s training computation and 281.95 s wall time at 34.25 updates/s, with 29,500 MiB peak memory and 481.84 W steady-state power. Five band views per support window make Band's memory and transform costs substantially higher than Mask's. Under the 30 GiB monitoring budget, Band therefore uses one patient lane.
 
-## 4. 数据分组、空闲 lane 与显存取舍
+## 4. Grouping, idle lanes, and memory trade-offs
 
-开发 Train-fit 经新清单过滤后为 463 名患者、3,838 条 EDF、710.72 小时、1,261,284 个预测窗口。每个条件每遍 F 有 83,394 次 inner update、C 有 87,160 次。重叠支持窗口不增加独立 EEG 小时数。
+After inventory filtering, development Train-fit contains 463 patients, 3,838 EDFs, 710.72 hours, and 1,261,284 prediction windows. Each condition has 83,394 F-mode or 87,160 C-mode inner updates per traversal. Overlapping support windows do not add independent EEG hours.
 
-患者工作量差异很大。按窗口数分桶、桶内随机并打乱四人组，只使用无标签长度信息，不按发作类型或模型得分分组。理论固定 lane 有效计算比例：随机顺序的双患者约 0.60，桶大小 8 约 0.92；四患者从约 0.36 到约 0.85–0.86。两遍顺序 seed 3408/3409 的结果近似一致。该比例是调度计算，不是实测速度；正式队列固定桶大小 8，仍需从完整遍历日志验证。
+Patient workloads differ substantially. Bucket by window count, randomize within buckets, and shuffle four-patient groups using unlabeled length information only, not seizure type or model score. The predicted active fraction for fixed two-lane scheduling rises from approximately 0.60 with random order to 0.92 with bucket size 8; four lanes rise from approximately 0.36 to 0.85–0.86. Traversal-order seeds 3408/3409 give similar results. These are scheduling estimates, not measured speed. The formal queue uses bucket size 8 and still needs full-traversal verification.
 
-某患者提前完成时，动态压缩已经结束的 lane，可避免后续时间片一直为其计算填充窗口。Band、48 条记录、四 F 条件、两个患者位置：不压缩训练计算段 166.76 s；压缩为 144.44 s，约减少 13%。峰值显存分别 29,808、30,104 MiB。后者虽然更快，却进一步逼近 32 GB 上限。Band 的单患者位置约 156.98 s；在该条件下单纯增加患者数会提高功率和显存，但反而使运行变慢。Mask 因视图更轻，选择两个患者位置。
+Dynamic compression removes completed lanes instead of computing padding for later ticks. On Band with 48 records, four F conditions, and two patient lanes, compression reduced training time from 166.76 s to 144.44 s, approximately 13%, while peak memory rose from 29,808 to 30,104 MiB, closer to the 32 GB limit. One patient lane took approximately 156.98 s. Merely adding patients can therefore raise power and memory while slowing execution. Mask uses two lanes because its views are lighter.
 
-物理批次与 outer batch 是两回事：可分多次处理一或两名患者，梯度累计覆盖完整四人组后才执行 outer optimizer step。OOM 时不能悄悄减少四次截断长度、支持窗口数或更新层；只能改变经过验证的物理微批次，并记录协议和显存影响。
+Physical batching differs from the outer batch: process one or two patients at a time but accumulate gradients over the full four-patient group before an outer step. OOM must not silently reduce four-step truncation, support windows, or adaptable layers. Change only validated physical microbatches and record the protocol/memory impact.
 
-## 5. 未带来可采纳速度收益的尝试
+## 5. Attempts without an adoptable speed improvement
 
-- **增加独立 GPU 进程**：4→8→12 使 Mask 总 updates/s 维持约 21，显存近似线性增长；复制工作超过了并行收益。
-- **Band 双患者固定 lane**：功率接近 473 W、显存约 29.8 GiB，但比单患者更慢；动态压缩虽改善，收益仍需与显存余量共同衡量。
-- **重复 SSL 视图再去重**：Band 八条件联合运行，去重前 275.28 s、去重后 276.77 s，全部 9,656 次更新均接受；八个最终模型和 SSL head 参数差值全部为零。消除了重复变换，但本次端到端计时没有改善。该技术可保留为共享计算基础，不能宣称已带来加速。
-- **TF32 `high` 数值探索**：四 F 条件训练计算段从 FP32 的 63.24 s 缩到 55.47 s；模型差异扩大到约 2e-5–4e-5，SSL head 约 3.6e-4–4.1e-4。事件报警对阈值附近的小分数变动敏感，尚未通过事件级对照，因此正式训练维持 FP32/最高矩阵精度。
-- **仅追逐 >=480 W**：Band 联合实测已达稳态约 480–482 W，但 34–35 updates/s 远低于功率较低的 Mask 联合运行。不同 SSL 负载不能用功率排名。
-- **无条件预取、增加 CPU workers 或缓存所有 SSL feature**：当前主要开销是二阶算子和发射碎片；在未证明读取等待占主导前，增加复制、缓存和 worker 可能增加内存压力。按源缓存 mmap 读取和按需切窗口继续作为默认路径。
+- **More independent GPU processes:** 4→8→12 kept aggregate Mask throughput near 21 updates/s while memory grew nearly linearly; duplication outweighed parallel benefit.
+- **Two fixed Band patient lanes:** approximately 473 W and 29.8 GiB, but slower than one lane. Dynamic compression helped, with a memory-headroom trade-off.
+- **Deduplicating repeated SSL views:** eight-condition Band took 275.28 s before and 276.77 s after deduplication; all 9,656 updates were accepted, and all eight final models/heads were identical. Repeated transformations were removed, but measured end-to-end speed did not improve. Retain it as shared-computation infrastructure without claiming measured acceleration.
+- **Exploratory TF32 `high`:** four F conditions fell from 63.24 s in FP32 to 55.47 s, but model differences rose to approximately 2e-5–4e-5 and SSL-head differences to 3.6e-4–4.1e-4. Event alarms are sensitive near thresholds; event equivalence remains unverified, so formal training keeps FP32/highest matmul precision.
+- **Chasing >=480 W alone:** joint Band reached approximately 480–482 W but only 34–35 updates/s, far below the lower-power joint Mask run. Power does not rank different SSL workloads.
+- **Unconditional prefetch, more CPU workers, or caching every SSL feature:** second-order operators and fragmented launches dominate current costs. Extra copies, caches, and workers can increase memory pressure unless read stalls are shown to dominate. Memory-mapped source caches and on-demand windows remain the default.
 
-## 6. 加速必须保留的 Meta 语义
+## 6. Meta semantics that optimization must preserve
 
-优化后每个条件的 inner 和部署更新仍仅改变 encoder 最后两层；outer 的 E/ED/ES/EDS 参数范围分别优化 encoder、detector、SSL head 的指定组合。Meta 训练与部署都关闭 dropout。S1 和缓存保持原初始化及预处理说明，不能把本轮结果表述为从原始 EDF 到报警严格逐样本因果。
+Inner and deployment updates still affect only the final two encoder layers. E/ED/ES/EDS outer scopes optimize their specified encoder, detector, and SSL-head combinations. Dropout is disabled in Meta training and deployment. S1 initialization and cache preprocessing remain unchanged; this round does not establish strict raw-EDF-to-alarm sample-level causality.
 
-为合并患者，截断反传边界改为四个同步 lane chunk tick，而不是旧实现按每条记录局部计数四次更新。数值 fast weights 跨截断继承，并以 `theta_start = theta_0 + stopgrad(theta_carry-theta_0)` 重新连接 source 初始化；EDF 边界恢复各自 source。记录边界可能使片段短于四次实际更新，F 的末 chunk no-op 也可能降低四 tick 内实际更新数。这是明确的 Meta 梯度近似变化，旧 checkpoint 不能与新训练历史混合比较。
+Patient batching changes backward boundaries to four synchronized lane chunk ticks instead of four locally counted updates per record. Numeric fast weights carry across truncation and reconnect through `theta_start = theta_0 + stopgrad(theta_carry-theta_0)`; each EDF resets to its own source. Record boundaries can shorten a segment, and F's final-chunk no-op can reduce actual updates within four ticks. This is an explicit meta-gradient approximation change; old checkpoints and new training histories must not be combined.
 
-Band 视图原来的排列顺序是“频带→lane→窗口”；共享前缀计算要求“lane→频带→窗口”。变换、标签和 loss 归一化一起重排，否则代码虽可运行，辅助任务标签会对应错误。Mask 的遮挡 target 与频谱输入必须用同一原信号和位置计算，不能由模型看见被遮挡频谱后再重建。
+Band views originally used band→lane→window order; shared-prefix computation requires lane→band→window. Transforms, labels, and loss normalization must be reordered together, or runnable code can assign incorrect auxiliary labels. Mask targets and spectral inputs must use the same original signal and positions; the model must not see masked spectra before reconstructing them.
 
-## 7. 真实训练、恢复和验收
+## 7. Full training, resume, and validation
 
-完整开发队列 [`358_run_tusz_fast_development_v2.py`](../scripts/358_run_tusz_fast_development_v2.py) 对 seed 3407 先训练 Mask、后训练 Band，各两遍。每种 SSL 在一个 GPU 进程中训练八个独立 F/C × E/ED/ES/EDS 条件。Mask 物理双患者，Band 单患者；患者长度分桶大小 8，所有有效记录和窗口完整使用。第一遍前 25% outer steps 暂冻结 detector，然后对需要训练 detector 的条件开放。每条件记录 inner/outer 梯度范数、接受率、裁剪比例、真实参数步长、各类标签权重和窗口覆盖。
+The full development queue [358_run_tusz_fast_development_v2.py](../scripts/358_run_tusz_fast_development_v2.py) trains Mask then Band, two traversals each, with seed 3407. Each SSL runs eight independent F/C × E/ED/ES/EDS conditions in one GPU process. Mask uses two physical patient lanes; Band uses one. Bucket size is 8, and all valid records/windows are used. The detector is frozen for the first 25% of outer steps in traversal one, then enabled where its outer scope permits. Each condition logs inner/outer gradient norms, acceptance rates, clipping ratios, actual parameter steps, class weights, and coverage.
 
-[`356_train_tusz_ensemble_v2.py`](../scripts/356_train_tusz_ensemble_v2.py) 每四个 outer steps 原子保存可恢复断点。断点包含八个条件的可变参数、SSL head、optimizer、随机状态、患者游标、累计覆盖及协议 hash。中断只在完整四人组边界保存；恢复重放未保存的组。48 条真实记录的连续训练与第一组后中断恢复相比，八套模型、head、optimizer 最大绝对差均为零，窗口、更新和类别权重一致。`last.pt` 是恢复状态，按 F/C 和 outer 条件保存的 `epoch_XX.pt` 是评价 checkpoint；两者用途不同。
+[356_train_tusz_ensemble_v2.py](../scripts/356_train_tusz_ensemble_v2.py) atomically saves resumable checkpoints every four outer steps. They contain mutable parameters, SSL heads, optimizers, random states, patient cursors, cumulative coverage, and protocol hashes for all eight conditions. Interruption saves only at complete four-patient group boundaries; resume replays unsaved groups. On 48 real records, uninterrupted versus interrupted-after-first-group/resumed training gave zero maximum differences in all eight models, heads, and optimizers, with identical windows, updates, and class weights. `last.pt` is recovery state; per-mode/scope `epoch_XX.pt` files are evaluation checkpoints.
 
-启动时连续记录 30 秒 `nvidia-smi` 样本，队列执行中每 30 秒写资源日志。全量启动检查显示进程确实存活、约 20 GiB 显存和 460–480 W 采样。训练完成需核对每条件每遍 463 名患者、3,838 条记录和 1,261,284 个预测窗口；不能用 queue 标记代替这些覆盖条件。开发训练完成后，内部验证、完整背景事件评价、阈值校准、梯度/SSL 大样本统计和正式确认仍需分别验收。
+Each launch records 30 seconds of consecutive NVIDIA-SMI samples; the queue logs resources every 30 seconds. Full-launch checks confirmed a live process, approximately 20 GiB memory, and sampled power of 460–480 W. Completion requires verifying 463 patients, 3,838 records, and 1,261,284 prediction windows per condition per traversal. A queue marker is insufficient. Internal validation, full-background event evaluation, threshold calibration, large-sample gradient/SSL analysis, and formal confirmation require separate acceptance checks.
 
-本轮相关测试在正式启动前共 75 项通过，其中包括更新有限差分、Mask 一/二阶梯度、Band/Mask lane loss、F/C 首末窗口及 reset、独立 head、患者压缩、分桶与恢复。除了测试，真实 CBraMod 四步图、48 记录最终参数和断点恢复也已对照。部署评价入口会按 checkpoint 读取 packed 更新和前缀精度设置；事件阈值附近的最终数值/报警一致性仍待完整评价。
+Before formal launch, 75 relevant tests passed, including update finite differences, Mask first-/second-order gradients, Band/Mask lane losses, F/C boundary windows and resets, independent heads, compression, bucketing, and resume. Real CBraMod four-step graphs, final parameters on 48 records, and checkpoint recovery were also compared. Deployment evaluation reads packed-update and prefix-precision settings from checkpoints. Final numerical/alarm equivalence near thresholds still requires complete evaluation.
 
-## 8. 下一次同类优化的执行顺序
+## 8. Procedure for future optimization
 
-1. 冻结数据清单、窗口/标签语义、source checkpoint 和 outer 条件，再固定一批真实短记录；同时做完整记录长度分布统计。
-2. 区分冷启动、训练计算段和完整墙钟；先测单条件及单核/内核发射，再试更大的同进程函数式批处理。
-3. 优先共享只读冻结前缀和确定性的变换；所有可训练 head、fast weights、Armijo 和 optimizer 保持独立。
-4. 每次改变更新 kernel、attention 后端或 CUDA Graph 后，验证 loss、一阶/二阶梯度、接受决策、真实参数和事件输出；不能只比较预测浮点最大误差。
-5. 用相同记录、条件数、精度和总更新量比较最终 wall time。若功率升而速度降，回退到更快配置。
-6. 全量训练前完成真实中断恢复，确保所有患者及窗口覆盖；训练启动后先看进程、GPU 样本和首个保存断点，再进行长等待。
+1. Freeze manifests, window/label semantics, source checkpoints, and outer conditions. Select fixed real short records and inspect the full record-length distribution.
+2. Separate cold start, training computation, and wall time. Measure one condition, single-core load, and launches before trying larger same-process functional batches.
+3. Share read-only frozen prefixes and deterministic transforms first. Keep trainable heads, fast weights, Armijo decisions, and optimizers independent.
+4. After changes to update kernels, attention backends, or CUDA Graphs, verify losses, first-/second-order gradients, acceptance, actual parameters, and events, not only maximum probability error.
+5. Compare wall time with identical records, condition counts, precision, and updates. Prefer the faster configuration if increased power slows execution.
+6. Test real interruption/resume and complete patient/window coverage before full training. Inspect the process, GPU samples, and first checkpoint after launch, then use long waits.
 
-主要原始证据位于 [`benchmarks/`](../outputs/reports/tusz_meta_ttt_v2/benchmarks/)；全量训练的实际吞吐、GPU 日志与断点位于 [`development_fast_v2_1/`](../outputs/reports/tusz_meta_ttt_v2/runs/meta/development_fast_v2_1/)。最终训练速度和检测收益以完整遍历、评价及固定阈值后的结果更新。
+Primary raw evidence is under [benchmarks/](../outputs/reports/tusz_meta_ttt_v2/benchmarks/). Full-training throughput, GPU logs, and checkpoints are under [development_fast_v2_1/](../outputs/reports/tusz_meta_ttt_v2/runs/meta/development_fast_v2_1/). Update final speed and detection claims using complete traversals, evaluation, and fixed-threshold results.

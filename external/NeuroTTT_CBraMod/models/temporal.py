@@ -16,7 +16,7 @@ class TemporalPretext(nn.Module):
         self.num_chunks = int(num_chunks)
         self.p_shuffle = float(p_shuffle)
 
-        # 与其它 pretext 一致，用 Linear + CE，两类
+        # Use Linear + two-class cross-entropy, consistent with other pretext tasks.
         self.classifier = nn.Linear(in_features=input_dim, out_features=2)
 
     @staticmethod
@@ -65,7 +65,7 @@ class TemporalPretext(nn.Module):
 
     def forward(self, feats: torch.Tensor, labels: torch.Tensor):
         """
-        feats: [B, D] (与你项目其它 pretext 一样，backbone+池化后的特征)
+        feats: [B, D], pooled backbone features as in the other pretext tasks.
         labels: [B] long tensor with values in {0,1}
         """
         logits = self.classifier(feats)              # [B, 2]

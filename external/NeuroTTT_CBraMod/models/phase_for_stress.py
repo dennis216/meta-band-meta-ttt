@@ -9,15 +9,15 @@ class PhasePretext(torch.nn.Module):
     def __init__(self, input_dim, num_steps=4, prop=1.0,
                  channel_names=None, selected_channels=None):
         """
-        channel_names: 当前输入张量对应的通道名（长度 = input_dim），
-                       若不提供则默认用 selected_channels（和你的 preprocessing 一致）
-        selected_channels: 预处理里用到的全量通道顺序（用于确定索引）
+        channel_names: Names of the current input channels (length = input_dim).
+                       If omitted, default to selected_channels, matching preprocessing.
+        selected_channels: Full preprocessing channel order, used to resolve indices.
         """
         super().__init__()
         self.input_dim = input_dim
         self.num_steps = num_steps
 
-        # —— 根据通道名取索引（严格按预处理顺序）——
+        # Resolve channel indices in the exact preprocessing order.
         if channel_names is None:
             if selected_channels is None:
                 selected_channels = ['EEG Fp1','EEG Fp2','EEG F3','EEG F4','EEG F7','EEG F8',
@@ -31,7 +31,7 @@ class PhasePretext(torch.nn.Module):
             [name_to_idx[ch] for ch in TARGET_CH_NAMES if ch in name_to_idx],
             dtype=torch.long
         )
-        assert len(self.target_idxs) == 7, f"找到了 {len(self.target_idxs)} 个目标通道索引，请检查通道名是否一致。"
+        assert len(self.target_idxs) == 7, f"Found {len(self.target_idxs)} target channel indices; check channel-name consistency."
 
         self.classifier = torch.nn.Linear(in_features=input_dim, out_features=self.num_steps)
 
@@ -40,15 +40,15 @@ class PhasePretext(torch.nn.Module):
         device = x.device
         target_idxs = self.target_idxs.to(device)
 
-        # 8 个离散相位，{0, π/8, π/4, 3π/8, π/2, 5π/8, 3π/4, 7π/8}
+        # Eight discrete phases: {0, pi/8, pi/4, 3pi/8, pi/2, 5pi/8, 3pi/4, 7pi/8}.
         # possible_shifts = torch.linspace(0, 7*math.pi/8, steps=self.num_steps, device=device)
         possible_shifts = torch.tensor([0.0, math.pi/4, math.pi/2, 3*math.pi/4], device=device)
         phase_shift_label = random.randrange(len(possible_shifts))
         phase_shift = possible_shifts[phase_shift_label]
 
-        # 频域旋转（只旋这 7 个通道，且“同时”使用同一相位）
-        freq_x = torch.fft.fft(x, dim=2)                  # [B, C, T] 复数
-        phase_shift_factor = torch.exp(phase_shift * 1j)  # 标量复数
+        # Rotate only these seven channels in the frequency domain using the same phase.
+        freq_x = torch.fft.fft(x, dim=2)                  # Complex tensor of shape [B, C, T].
+        phase_shift_factor = torch.exp(phase_shift * 1j)  # Complex scalar.
         freq_x[:, target_idxs, :] = freq_x[:, target_idxs, :] * phase_shift_factor
 
         time_x = torch.fft.ifft(freq_x, dim=2).real

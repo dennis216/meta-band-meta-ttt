@@ -31,9 +31,9 @@ def setup_seed(seed):
     random.seed(seed)
 
 
-#遍历文件夹
+# Traverse folders.
 def iter_files(rootDir):
-    #遍历根目录
+    # Traverse the root directory.
     file_path_list = []
     for root,dirs,files in os.walk(rootDir):
         for file in files:

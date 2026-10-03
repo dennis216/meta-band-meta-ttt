@@ -1,12 +1,12 @@
 
-# 左右半球通道对称交换（中线不动）→ 二分类：是否交换
+# Swap symmetric left/right hemisphere channels, keeping midline channels fixed; classify whether swapped.
 from __future__ import annotations
 from typing import List, Tuple, Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# —— 32 通道（0-based）索引 —— #
+# Zero-based indices for 32 channels.
 # ['Fp1','Fp2','Fz','F3','F4','F7','F8','FC1','FC2','FC5','FC6','Cz','C3','C4','T3','T4','A1','A2','CP1','CP2','CP5','CP6','Pz','P3','P4','T5','T6','PO3','PO4','Oz','O1','O2']
 DEFAULT_PAIRS_32: List[Tuple[int, int]] = [
     (0, 1),    # Fp1 ↔ Fp2
@@ -28,11 +28,11 @@ DEFAULT_MIDLINE_32 = [2, 11, 22, 29]  # Fz, Cz, Pz, Oz
 
 class JigsawPretext(nn.Module):
     """
-    使用方法：
-      1) 先把输入展平成 (B, C, T)，调用 make_symmetry(x_flat)。其中 C 应与上面的 32 通道一致。
-      2) 得到 (x_out, labels)：labels=0 表示未交换，1 表示已交换。
-      3) 将 x_out 送入你的 backbone → 得到特征 feats_flat:(B, D)；
-         再用 loss_from_features(feats_flat, labels) 得到交叉熵损失。
+    Usage:
+      1) Flatten inputs to (B, C, T) and call make_symmetry(x_flat); C must match the 32 channels above.
+      2) Obtain (x_out, labels): 0 = unchanged, 1 = swapped.
+      3) Pass x_out through the backbone to obtain feats_flat of shape (B, D).
+         Then call loss_from_features(feats_flat, labels) to compute cross-entropy.
     """
     def __init__(self,
                  pairs: Optional[List[Tuple[int,int]]] = None,
@@ -48,9 +48,9 @@ class JigsawPretext(nn.Module):
     @torch.no_grad()
     def make_symmetry(self, x_flat: torch.Tensor):
         """
-        输入  x_flat: (B, C, T)   （C 按本文件 32 通道顺序排列，0-based）
-        输出  x_out:  (B, C, T)； labels: (B,)  in {0:未交换, 1:已交换}
-        逻辑  以 50% 概率对样本进行左右半球成对通道互换；中线通道保持不变。
+        Input x_flat: (B, C, T), with C in the zero-based 32-channel order defined here.
+        Output x_out: (B, C, T); labels: (B,), with 0 = unchanged and 1 = swapped.
+        Swap paired left/right hemisphere channels with 50% probability; keep midline channels fixed.
         """
         if x_flat.dim() != 3:
             raise ValueError(f"x_flat must be (B,C,T), got {tuple(x_flat.shape)}")
@@ -58,7 +58,7 @@ class JigsawPretext(nn.Module):
         out = x_flat.clone()
         labels = torch.zeros(B, dtype=torch.long, device=x_flat.device)
 
-        # 仅使用索引在范围内的成对通道
+        # Use only pairs with channel indices inside the valid range.
         pairs = [(i, j) for (i, j) in self.pairs if (i < C and j < C)]
         for b in range(B):
             do_swap = torch.randint(0, 2, (1,), device=x_flat.device).item()  # 0/1
@@ -80,15 +80,15 @@ class JigsawPretext(nn.Module):
                 nn.Dropout(0.1),
                 nn.Linear(self.hidden_dim, 256),
                 nn.GELU(),
-                nn.Linear(256, 2),  # 0/1 是否交换
+                nn.Linear(256, 2),  # 0/1: whether channels were swapped.
             )
             self._in_dim = in_dim
 
     def loss_from_features(self, feats_flat: torch.Tensor, swap_labels: torch.Tensor):
         """
-        feats_flat: (B, D) 由 backbone 输出展平
+        feats_flat: (B, D), flattened backbone outputs.
         swap_labels: (B,) in {0,1}
-        返回 (loss, preds)
+        Return (loss, preds).
         """
         self._ensure_head(feats_flat.size(1))
         logits = self.classifier(feats_flat)

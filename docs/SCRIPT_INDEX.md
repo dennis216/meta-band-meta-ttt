@@ -1,10 +1,10 @@
 # Script index
 
-保留原脚本编号。shell 队列会启动实际作业；运行前阅读脚本及所需资产说明。
+Original script numbers are retained. Shell queues launch actual jobs; read each script and its asset requirements before running it.
 
-| 入口 | 说明 |
+| Entry point | Description |
 |---|---|
-| [02_download_chbmit.sh](../scripts/02_download_chbmit.sh) | 历史队列/运行入口 |
+| [02_download_chbmit.sh](../scripts/02_download_chbmit.sh) | Historical queue / execution entry point |
 | [03_build_manifests.py](../scripts/03_build_manifests.py) | build manifests |
 | [03b_build_windows.py](../scripts/03b_build_windows.py) | build windows |
 | [110_preflight_no_duplicate_overlap.py](../scripts/110_preflight_no_duplicate_overlap.py) | Preflight guard against duplicate or silently overlapping experiments. |
@@ -12,21 +12,21 @@
 | [204_audit_cbramod_same_patient_adaptation.py](../scripts/204_audit_cbramod_same_patient_adaptation.py) | Audit and threshold-sweep the completed same-patient CBraMod experiment. |
 | [205_audit_cbramod_prequential_calibration.py](../scripts/205_audit_cbramod_prequential_calibration.py) | Prequential, prior-record-only calibration audit for same-patient adaptation. |
 | [210_joint_ttt_train.py](../scripts/210_joint_ttt_train.py) | Joint source training for the CBraMod test-time-training experiment. |
-| [211_queue_joint_ttt_v1.sh](../scripts/211_queue_joint_ttt_v1.sh) | 历史队列/运行入口 |
+| [211_queue_joint_ttt_v1.sh](../scripts/211_queue_joint_ttt_v1.sh) | Historical queue / execution entry point |
 | [212_meta_ttt_train.py](../scripts/212_meta_ttt_train.py) | First-order MT3-style meta-training for unlabeled CBraMod TTT. |
 | [214_evaluate_joint_ttt.py](../scripts/214_evaluate_joint_ttt.py) | Evaluate a trained Joint- or Meta-TTT CBraMod checkpoint without target labels. |
-| [216_queue_meta_ttt_v1.sh](../scripts/216_queue_meta_ttt_v1.sh) | 历史队列/运行入口 |
-| [219_wait_then_start_meta_v1.sh](../scripts/219_wait_then_start_meta_v1.sh) | 历史队列/运行入口 |
-| [221_queue_joint_eval_v1.sh](../scripts/221_queue_joint_eval_v1.sh) | 历史队列/运行入口 |
-| [222_queue_meta_eval_v1.sh](../scripts/222_queue_meta_eval_v1.sh) | 历史队列/运行入口 |
-| [223_wait_then_eval_meta_v1.sh](../scripts/223_wait_then_eval_meta_v1.sh) | 历史队列/运行入口 |
+| [216_queue_meta_ttt_v1.sh](../scripts/216_queue_meta_ttt_v1.sh) | Historical queue / execution entry point |
+| [219_wait_then_start_meta_v1.sh](../scripts/219_wait_then_start_meta_v1.sh) | Historical queue / execution entry point |
+| [221_queue_joint_eval_v1.sh](../scripts/221_queue_joint_eval_v1.sh) | Historical queue / execution entry point |
+| [222_queue_meta_eval_v1.sh](../scripts/222_queue_meta_eval_v1.sh) | Historical queue / execution entry point |
+| [223_wait_then_eval_meta_v1.sh](../scripts/223_wait_then_eval_meta_v1.sh) | Historical queue / execution entry point |
 | [224_summarize_ttt_results.py](../scripts/224_summarize_ttt_results.py) | Aggregate the completed Joint-TTT, MT3-style, and label-prior runs. |
-| [225_wait_then_summarize_ttt_v1.sh](../scripts/225_wait_then_summarize_ttt_v1.sh) | 历史队列/运行入口 |
+| [225_wait_then_summarize_ttt_v1.sh](../scripts/225_wait_then_summarize_ttt_v1.sh) | Historical queue / execution entry point |
 | [226_audit_ttt_results.py](../scripts/226_audit_ttt_results.py) | Audit the completed method-comparison runs without recomputing metrics. |
 | [227_analyze_ttt_results.py](../scripts/227_analyze_ttt_results.py) | Read-only, fold-aware analysis of the three CBraMod TTT experiments. |
 | [228_write_ttt_report.py](../scripts/228_write_ttt_report.py) | Write a concise, auditable Markdown report from finished TTT analyses. |
 | [230_run_tusz_joint_ttt_one_round.py](../scripts/230_run_tusz_joint_ttt_one_round.py) | One-round external TTT for Joint-TTT CBraMod on the official TUSZ Eval cohort. |
-| [231_wait_then_tusz_joint_ttt_one_round.sh](../scripts/231_wait_then_tusz_joint_ttt_one_round.sh) | 历史队列/运行入口 |
+| [231_wait_then_tusz_joint_ttt_one_round.sh](../scripts/231_wait_then_tusz_joint_ttt_one_round.sh) | Historical queue / execution entry point |
 | [232_validate_fast_joint_ttt_scoring.py](../scripts/232_validate_fast_joint_ttt_scoring.py) | Numerically validate and benchmark the deduplicated Joint-TTT scorer. |
 | [233_parallel_joint_ttt_evaluation.py](../scripts/233_parallel_joint_ttt_evaluation.py) | Run independent Joint-TTT fold/seed evaluations concurrently on one GPU. |
 | [234_audit_joint_ttt_parameter_update.py](../scripts/234_audit_joint_ttt_parameter_update.py) | Audit that one Joint-TTT update changes the frozen detector parameters. |
@@ -38,13 +38,13 @@
 | [266_summarize_band_ttt_v2.py](../scripts/266_summarize_band_ttt_v2.py) | Summarize completed Band-TTT v2 fold-0/1 jobs against frozen baselines. |
 | [267_queue_band_ttt_v2.py](../scripts/267_queue_band_ttt_v2.py) | Resumable single-phase queue for frozen Band-TTT v2 evaluation. |
 | [268_import_existing_band_ttt_v2.py](../scripts/268_import_existing_band_ttt_v2.py) | Register mathematically identical existing Window results in the final v2 release. |
-| [269_wait_then_queue_band_ttt_v2.sh](../scripts/269_wait_then_queue_band_ttt_v2.sh) | 历史队列/运行入口 |
+| [269_wait_then_queue_band_ttt_v2.sh](../scripts/269_wait_then_queue_band_ttt_v2.sh) | Historical queue / execution entry point |
 | [270_queue_band_ttt_v2_paired.py](../scripts/270_queue_band_ttt_v2_paired.py) | Resumable paired validation/test queue for frozen Band-TTT v2. |
-| [271_run_band_ttt_v2_paired.sh](../scripts/271_run_band_ttt_v2_paired.sh) | 历史队列/运行入口 |
+| [271_run_band_ttt_v2_paired.sh](../scripts/271_run_band_ttt_v2_paired.sh) | Historical queue / execution entry point |
 | [272_diagnose_band_gradient_alignment.py](../scripts/272_diagnose_band_gradient_alignment.py) | Diagnose Band-SSL/classification gradient alignment before retraining. |
 | [280_retrain_band_ttt_v2.py](../scripts/280_retrain_band_ttt_v2.py) | Registered two-fold Band-TTT retraining release. |
 | [281_evaluate_retrained_band_ttt_v2.py](../scripts/281_evaluate_retrained_band_ttt_v2.py) | Causal continuous validation/test evaluator for the repaired release. |
-| [282_queue_retrained_band_ttt_v2.sh](../scripts/282_queue_retrained_band_ttt_v2.sh) | 历史队列/运行入口 |
+| [282_queue_retrained_band_ttt_v2.sh](../scripts/282_queue_retrained_band_ttt_v2.sh) | Historical queue / execution entry point |
 | [283_preflight_retrained_band_ttt_v2.py](../scripts/283_preflight_retrained_band_ttt_v2.py) | Preflight checks required before the formal repaired release queue. |
 | [300_preflight_tusz_meta_ttt_v1.py](../scripts/300_preflight_tusz_meta_ttt_v1.py) | Fail-closed preflight for the TUSZ Meta-TTT v1 experiment namespace. |
 | [301_prepare_tusz_meta_ttt_v1.py](../scripts/301_prepare_tusz_meta_ttt_v1.py) | prepare tusz meta ttt v1 |
@@ -116,19 +116,19 @@
 | [369_verify_tusz_later_truncation_v2.py](../scripts/369_verify_tusz_later_truncation_v2.py) | Check a later truncated Meta segment on the real CBraMod tail. |
 | [370_verify_tusz_threshold_lock_v2.py](../scripts/370_verify_tusz_threshold_lock_v2.py) | Verify every formal seed-3407 Eval threshold equals its saved Dev choice. |
 | [371_train_tusz_meta_ttt_v3.py](../scripts/371_train_tusz_meta_ttt_v3.py) | Train the four future-mode v3 outer objectives in one shared-prefix ensemble. |
-| [375_evaluate_tusz_meta_ttt_v3_development.sh](../scripts/375_evaluate_tusz_meta_ttt_v3_development.sh) | 历史队列/运行入口 |
+| [375_evaluate_tusz_meta_ttt_v3_development.sh](../scripts/375_evaluate_tusz_meta_ttt_v3_development.sh) | Historical queue / execution entry point |
 | [376_summarize_tusz_meta_ttt_v3.py](../scripts/376_summarize_tusz_meta_ttt_v3.py) | Create the fixed-budget v3 development table and exact weighted BCE audit. |
-| [377_run_tusz_meta_ttt_v3_mechanisms.sh](../scripts/377_run_tusz_meta_ttt_v3_mechanisms.sh) | 历史队列/运行入口 |
+| [377_run_tusz_meta_ttt_v3_mechanisms.sh](../scripts/377_run_tusz_meta_ttt_v3_mechanisms.sh) | Historical queue / execution entry point |
 | [378_decompose_tusz_v3_outer_gradients.py](../scripts/378_decompose_tusz_v3_outer_gradients.py) | Exact full/direct/through-inner outer-gradient decomposition on Train diagnostics. |
-| [379_run_tusz_v3_supervised_controls.sh](../scripts/379_run_tusz_v3_supervised_controls.sh) | 历史队列/运行入口 |
+| [379_run_tusz_v3_supervised_controls.sh](../scripts/379_run_tusz_v3_supervised_controls.sh) | Historical queue / execution entry point |
 | [380_audit_tusz_meta_ttt_v3_completion.py](../scripts/380_audit_tusz_meta_ttt_v3_completion.py) | audit tusz meta ttt v3 completion |
-| [381_run_tusz_v3_train_fit_mechanisms.sh](../scripts/381_run_tusz_v3_train_fit_mechanisms.sh) | 历史队列/运行入口 |
+| [381_run_tusz_v3_train_fit_mechanisms.sh](../scripts/381_run_tusz_v3_train_fit_mechanisms.sh) | Historical queue / execution entry point |
 | [401_rescore_tusz_meta_ttt_v4.py](../scripts/401_rescore_tusz_meta_ttt_v4.py) | rescore tusz meta ttt v4 |
 | [410_calibrate_tusz_meta_ttt_v4.py](../scripts/410_calibrate_tusz_meta_ttt_v4.py) | calibrate tusz meta ttt v4 |
 | [411_train_tusz_meta_ttt_v4.py](../scripts/411_train_tusz_meta_ttt_v4.py) | Train the three future-mode v4 objectives in one shared-prefix ensemble. |
-| [412_evaluate_tusz_meta_ttt_v4.sh](../scripts/412_evaluate_tusz_meta_ttt_v4.sh) | 历史队列/运行入口 |
+| [412_evaluate_tusz_meta_ttt_v4.sh](../scripts/412_evaluate_tusz_meta_ttt_v4.sh) | Historical queue / execution entry point |
 | [413_bootstrap_tusz_meta_ttt_v4.py](../scripts/413_bootstrap_tusz_meta_ttt_v4.py) | bootstrap tusz meta ttt v4 |
-| [414_run_tusz_meta_ttt_v4_mechanisms.sh](../scripts/414_run_tusz_meta_ttt_v4_mechanisms.sh) | 历史队列/运行入口 |
+| [414_run_tusz_meta_ttt_v4_mechanisms.sh](../scripts/414_run_tusz_meta_ttt_v4_mechanisms.sh) | Historical queue / execution entry point |
 | [415_decompose_tusz_meta_ttt_v4.py](../scripts/415_decompose_tusz_meta_ttt_v4.py) | decompose tusz meta ttt v4 |
 | [416_report_tusz_meta_ttt_v4.py](../scripts/416_report_tusz_meta_ttt_v4.py) | report tusz meta ttt v4 |
 | [61_run_baseline.py](../scripts/61_run_baseline.py) | run baseline |

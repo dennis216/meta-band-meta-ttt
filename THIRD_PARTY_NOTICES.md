@@ -13,6 +13,11 @@ retained MIT license at `external/NeuroTTT_CBraMod/LICENSE`. Research additions
 are identified by their source hashes; the upstream MIT notice must remain
 with the covered source.
 
+On 2026-10-03, Chinese comments, docstrings, and human-readable messages in
+the bundled research extension were translated into English. Numerical code
+and license notices were preserved. The source manifest retains the hashes
+of the original files before translation.
+
 Python packages are installed separately and retain their respective licenses.
 Datasets and pretrained/trained weights are not distributed here.
 No new project-wide license has been selected for the original research additions.
